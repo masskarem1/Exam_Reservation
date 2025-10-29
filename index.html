@@ -498,12 +498,17 @@
                                 <label for="student-id" data-key="labelStudentId">Student ID</label>
                                 <input type="text" id="student-id" name="studentId" data-key-placeholder="placeholderStudentId" placeholder="Enter your 5 or 9 digit ID" required>
                             </div>
+                            <!-- NEW: Email Field -->
+                            <div class="form-group">
+                                <label for="student-email" data-key="labelEmail">Email</label>
+                                <input type="email" id="student-email" name="studentEmail" data-key-placeholder="placeholderEmail" placeholder="Enter your email for confirmation" required>
+                            </div>
                             <div class="form-group">
                                 <label for="student-password" data-key="labelCreatePassword">Create Password (min 4 chars)</label>
                                 <input type="password" id="student-password" name="studentPassword" data-key-placeholder="placeholderCreatePassword" placeholder="Create a password for updates" required>
                             </div>
                             <button type="submit" class="form-button" data-key="buttonConfirmReserve">Confirm My Reservation</button>
-                            <!-- NEW: In-form message area -->
+                            <!-- In-form message area -->
                             <div id="reserve-form-message" class="form-message"></div>
                         </form>
                     </div>
@@ -620,6 +625,8 @@
                 'reserveYourSeat': 'Your Seat',
                 'labelStudentId': 'Student ID',
                 'placeholderStudentId': 'Enter your 5 or 9 digit ID',
+                'labelEmail': 'Email', // NEW
+                'placeholderEmail': 'Enter your email for confirmation', // NEW
                 'labelCreatePassword': 'Create Password (min 4 chars)',
                 'placeholderCreatePassword': 'Create a password for updates',
                 'buttonConfirmReserve': 'Confirm My Reservation',
@@ -653,6 +660,7 @@
                 'msgSuccess': 'Reservation successful! Your seat is booked.',
                 'msgSuccessUpdate': 'Your reservation has been successfully updated.',
                 'msgErrorIDNotFound': 'Student ID not found or invalid format (must be 5 or 9 digits).', 
+                'msgErrorInvalidEmail': 'Invalid email format.', // NEW
                 'msgErrorAlreadyReserved': 'This ID already has a reservation. Check your reservation to make changes.',
                 'msgErrorCapacity': 'is full for this period.',
                 'msgErrorInvalidPeriod': 'Invalid period selected.',
@@ -679,6 +687,8 @@
                 'reserveYourSeat': 'مقعدك',
                 'labelStudentId': 'الرقم الجامعي',
                 'placeholderStudentId': 'أدخل رقمك المكون من 5 أو 9 أرقام',
+                'labelEmail': 'البريد الإلكتروني', // NEW
+                'placeholderEmail': 'أدخل بريدك الإلكتروني للتأكيد', // NEW
                 'labelCreatePassword': 'إنشاء كلمة مرور (4 أحرف على الأقل)',
                 'placeholderCreatePassword': 'أنشئ كلمة مرور للتحديثات',
                 'buttonConfirmReserve': 'تأكيد حجزي',
@@ -712,6 +722,7 @@
                 'msgSuccess': 'تم الحجز بنجاح!',
                 'msgSuccessUpdate': 'تم تحديث حجزك بنجاح.',
                 'msgErrorIDNotFound': 'الرقم الجامعي غير موجود أو غير صالح (يجب أن يكون 5 أو 9 أرقام).',
+                'msgErrorInvalidEmail': 'صيغة البريد الإلكتروني غير صحيحة.', // NEW
                 'msgErrorAlreadyReserved': 'هذا الرقم لديه حجز بالفعل. يمكنك الاستعلام لتغيير الحجز.',
                 'msgErrorCapacity': 'ممتلئ في الفترة المحددة.',
                 'msgErrorInvalidPeriod': 'فترة زمنية غير صالحة.',
@@ -733,10 +744,11 @@
             'Your reservation has been successfully updated.': 'msgSuccessUpdate',
             'Student ID not found in the registration list.': 'msgErrorIDNotFound',
             'Invalid Student ID format. Must be 5 or 9 digits.': 'msgErrorIDNotFound', 
+            'Invalid email format.': 'msgErrorInvalidEmail', // NEW
             'This ID already has a reservation. Check your reservation to make changes.': 'msgErrorAlreadyReserved',
             'Invalid period selected.': 'msgErrorInvalidPeriod',
             'No reservation found for this ID.': 'msgErrorNoReservation',
-            'No reservation found for this ID. You can make a new one.': 'msgErrorNoReservation', // Handle script variation
+            'No reservation found for this ID. You can make a new one.': 'msgErrorNoReservation',
             'The deadline for changing reservations (3/11/2025) has passed.': 'msgErrorDeadline',
             'Could not find your original reservation to update.': 'msgErrorUpdateFailed',
             'This is the same as your current reservation.': 'msgErrorSameReservation',
@@ -744,8 +756,8 @@
             'You have already set a password. Go to Check/Update to log in.': 'msgErrorPasswordSet',
             'You have not set a password yet. Please make a new reservation to set one.': 'msgErrorPasswordNotSet',
             'Incorrect password.': 'msgErrorIncorrectPassword',
-            'Invalid lab selected.': 'msgErrorGeneric',
-            'Reservation failed. Could not save password.': 'msgErrorGeneric'
+            'Invalid lab selected.': 'msgErrorGeneric', 
+            'Reservation failed. Could not save password/email.': 'msgErrorGeneric'
         };
         // Keys for dynamic messages
         const dynamicMessageKeys = {
@@ -762,11 +774,11 @@
         const loadingOverlay = document.getElementById('loading-overlay');
         const messageModal = document.getElementById('message-modal');
         const reserveForm = document.getElementById('reserve-form');
-        const reserveFormMessage = document.getElementById('reserve-form-message'); // NEW
+        const reserveFormMessage = document.getElementById('reserve-form-message');
         const checkForm = document.getElementById('check-form');
-        const checkFormMessage = document.getElementById('check-form-message'); // NEW
+        const checkFormMessage = document.getElementById('check-form-message');
         const updateForm = document.getElementById('update-form');
-        const updateFormMessage = document.getElementById('update-form-message'); // NEW
+        const updateFormMessage = document.getElementById('update-form-message');
         const checkResults = document.getElementById('check-results');
         const locationCardsContainer = document.getElementById('location-cards-container');
         const periodCardsContainer = document.getElementById('period-cards-container');
@@ -834,7 +846,6 @@
             return message; // Fallback
         }
 
-        // Use this for modal pop-ups (e.g., loading)
         function showModalMessage(message, type = 'success') {
             messageModal.textContent = getTranslatedMessage(message);
             messageModal.className = type;
@@ -842,7 +853,6 @@
             setTimeout(() => { messageModal.style.display = 'none'; }, 3000);
         }
 
-        // NEW: Use this for in-form messages
         function showFormMessage(element, message, type = 'success') {
             const msg = getTranslatedMessage(message);
             element.textContent = msg;
@@ -859,7 +869,7 @@
             document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
             document.getElementById(pageId).classList.add('active');
             
-            clearFormMessages(); // Clear messages when switching pages
+            clearFormMessages(); 
             
             if (pageId === 'page-welcome') {
                 reserveForm.reset();
@@ -968,7 +978,7 @@
         // --- Data Fetching Functions ---
         
         async function fetchReservationData(isSilent = false) {
-            if (!isSilent) { // Only show loading UI on initial load
+            if (!isSilent) { 
                 showLoading();
                 const lang = translations[currentLanguage];
                 showModalMessage(lang['loadingData'], 'success'); 
@@ -993,7 +1003,7 @@
 
                 if (result.status === 'success') {
                     reservationData = result.data;
-                    buildLocationCards(); // Always refresh cards
+                    buildLocationCards(); 
                 } else {
                     throw new Error(result.message);
                 }
@@ -1013,17 +1023,19 @@
         reserveForm.addEventListener('submit', (e) => {
             e.preventDefault();
             showLoading();
-            clearFormMessages(); // Clear old messages
+            clearFormMessages(); 
 
             const studentId = document.getElementById('student-id').value;
             const password = document.getElementById('student-password').value;
+            const email = document.getElementById('student-email').value; // NEW
             
             const data = {
                 action: 'submitReservation',
                 studentId: studentId,
                 location: selectedLocation,
                 period: selectedPeriod,
-                password: password
+                password: password,
+                email: email // NEW
             };
 
             fetch(SCRIPT_URL, {
@@ -1035,16 +1047,13 @@
             .then(response => {
                 hideLoading();
                 if (response.status === 'success') {
-                    // Show success message IN THE FORM
                     showFormMessage(reserveFormMessage, response.message, 'success');
                     reserveForm.reset();
-                    // Go back to home after a short delay
                     setTimeout(() => {
                          showPage('page-welcome');
-                         fetchReservationData(true); // Silently refresh data
+                         fetchReservationData(true); 
                     }, 2000);
                 } else {
-                    // Show error message IN THE FORM
                     showFormMessage(reserveFormMessage, response.message, 'error');
                 }
             })
@@ -1132,13 +1141,12 @@
                 hideLoading();
                 if (response.status === 'success') {
                     showFormMessage(updateFormMessage, response.message, 'success');
-                    // Hide forms and reset check form after a delay
                     setTimeout(() => {
                         updateForm.style.display = 'none';
                         checkResults.style.display = 'none';
                         checkForm.reset();
                         showPage('page-welcome'); 
-                        fetchReservationData(true); // Silently refresh
+                        fetchReservationData(true); 
                     }, 2000);
                 } else {
                     showFormMessage(updateFormMessage, response.message, 'error');
