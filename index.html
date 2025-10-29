@@ -492,7 +492,7 @@
 
     <script>
         // --- Configuration ---
-        const SCRIPT_URL = "httpsNBILL_GOOGLE_SCRIPT_URL_HERE"; // PASTE YOUR GOOGLE SCRIPT URL
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwf0UwMPYQ-DtVZEZ9EH3sBZW-y1KFQU7UT5TdwUgC1MrptesUmE8F4gDMZpKlBygXFBw/exec"; // PASTE YOUR GOOGLE SCRIPT URL
         const PERIODS = [
             "10:00 - 10:35",
             "10:40 - 11:15",
@@ -820,11 +820,14 @@
             showMessage(lang['loadingData'], 'success'); // Use 'success' for neutral bg
             
             try {
-                // Use a GET request to fetch data from the script
+                // Use a POST request to fetch data
                 // This requires the doGet(e) function in Apps Script
+                const payload = { action: 'getCapacity' };
+
                 const response = await fetch(SCRIPT_URL, {
-                    method: 'GET',
-                    redirect: 'follow',
+                    method: 'POST', // CHANGED from GET
+                    body: JSON.stringify(payload), // ADDED
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' } // CHANGED
                 });
 
                 if (!response.ok) {
@@ -867,7 +870,7 @@
             fetch(SCRIPT_URL, {
                 method: 'POST',
                 body: JSON.stringify(data),
-                headers: { 'Content-Type': 'application/json' }
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' } // CHANGED
             })
             .then(res => res.json())
             .then(response => {
@@ -901,7 +904,7 @@
             fetch(SCRIPT_URL, {
                 method: 'POST',
                 body: JSON.stringify(data),
-                headers: { 'Content-Type': 'application/json' }
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' } // CHANGED
             })
             .then(res => res.json())
             .then(response => {
@@ -949,7 +952,7 @@
             fetch(SCRIPT_URL, {
                 method: 'POST',
                 body: JSON.stringify(data),
-                headers: { 'Content-Type': 'application/json' }
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' } // CHANGED
             })
             .then(res => res.json())
             .then(response => {
@@ -980,4 +983,6 @@
 
 </body>
 </html>
+
+
 
