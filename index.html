@@ -169,7 +169,7 @@
 
       try {
         // Connect this URL to your Google Apps Script endpoint
-        const response = await fetch("YOUR_APPS_SCRIPT_WEBAPP_URL", {
+        const response = await fetch("https://script.google.com/macros/s/AKfycbwf0UwMPYQ-DtVZEZ9EH3sBZW-y1KFQU7UT5TdwUgC1MrptesUmE8F4gDMZpKlBygXFBw/exec", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(data)
