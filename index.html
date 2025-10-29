@@ -409,6 +409,11 @@
                                 <label for="student-id" data-key="labelStudentId">Student ID</label>
                                 <input type="text" id="student-id" name="studentId" data-key-placeholder="placeholderStudentId" placeholder="Enter your 7-digit ID" required>
                             </div>
+                            <!-- NEW: Password Field -->
+                            <div class="form-group">
+                                <label for="student-password" data-key="labelCreatePassword">Create Password (min 4 chars)</label>
+                                <input type="password" id="student-password" name="studentPassword" data-key-placeholder="placeholderCreatePassword" placeholder="Create a password for updates" required>
+                            </div>
                             <button type="submit" class="form-button" data-key="buttonConfirmReserve">Confirm My Reservation</button>
                         </form>
                     </div>
@@ -436,6 +441,11 @@
                         <label for="check-student-id" data-key="labelCheckStudentId">Student ID</label>
                         <input type="text" id="check-student-id" name="checkStudentId" data-key-placeholder="placeholderCheckStudentId" placeholder="Enter your ID to check" required>
                     </div>
+                    <!-- NEW: Password Field -->
+                    <div class="form-group">
+                        <label for="check-password" data-key="labelPassword">Password</label>
+                        <input type="password" id="check-password" name="checkPassword" data-key-placeholder="placeholderPassword" placeholder="Enter your password" required>
+                    </div>
                     <button type="submit" class="form-button" data-key="buttonCheck">Check My Reservation</button>
                 </form>
 
@@ -454,6 +464,7 @@
                     <h3 data-key="updateTitle">Change Your Reservation</h3>
                     <p style="text-align:center; color: var(--error-color); font-weight: 600;" data-key="updateWarning">Reservation changes are allowed until 3/11/2025.</p>
                     <input type="hidden" id="update-student-id" name="updateStudentId">
+                    <input type="hidden" id="update-password" name="updatePassword">
                     
                     <div class="form-group">
                         <label for="update-location" data-key="labelUpdateLocation">New Location</label>
@@ -492,7 +503,7 @@
 
     <script>
         // --- Configuration ---
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwf0UwMPYQ-DtVZEZ9EH3sBZW-y1KFQU7UT5TdwUgC1MrptesUmE8F4gDMZpKlBygXFBw/exec"; // PASTE YOUR GOOGLE SCRIPT URL
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwf0UwMPYQ-DtVZEZ9EH3sBZW-y1KFQU7UT5TdwUgC1MrptesUmE8F4gDMZpKlBygXFBw/exec";
         const PERIODS = [
             "10:00 - 10:35",
             "10:40 - 11:15",
@@ -514,9 +525,13 @@
                 'reserveYourSeat': 'Your Seat',
                 'labelStudentId': 'Student ID',
                 'placeholderStudentId': 'Enter your 7-digit ID',
+                'labelCreatePassword': 'Create Password (min 4 chars)',
+                'placeholderCreatePassword': 'Create a password for updates',
                 'buttonConfirmReserve': 'Confirm My Reservation',
                 'labelCheckStudentId': 'Student ID',
                 'placeholderCheckStudentId': 'Enter your ID to check',
+                'labelPassword': 'Password',
+                'placeholderPassword': 'Enter your password',
                 'buttonCheck': 'Check My Reservation',
                 'resultsTitle': 'Your Current Reservation',
                 'resultName': 'Name:',
@@ -550,7 +565,11 @@
                 'msgErrorSameReservation': 'This is the same as your current reservation.',
                 'msgErrorUpdateFailed': 'Could not find your original reservation to update.',
                 'msgErrorDeadline': 'The deadline for changing reservations (3/11/2025) has passed.',
-                'msgErrorGeneric': 'An error occurred: '
+                'msgErrorGeneric': 'An error occurred: ',
+                'msgErrorShortPassword': 'Password must be at least 4 characters long.',
+                'msgErrorPasswordSet': 'You have already set a password. Go to Check/Update to log in.',
+                'msgErrorPasswordNotSet': 'You have not set a password yet. Please make a new reservation to set one.',
+                'msgErrorIncorrectPassword': 'Incorrect password.'
             },
             'ar': {
                 'pageTitle': 'حجز مقاعد الاختبار',
@@ -563,9 +582,13 @@
                 'reserveYourSeat': 'مقعدك',
                 'labelStudentId': 'الرقم الجامعي',
                 'placeholderStudentId': 'أدخل رقمك المكون من 7 أرقام',
+                'labelCreatePassword': 'إنشاء كلمة مرور (4 أحرف على الأقل)',
+                'placeholderCreatePassword': 'أنشئ كلمة مرور للتحديثات',
                 'buttonConfirmReserve': 'تأكيد حجزي',
                 'labelCheckStudentId': 'الرقم الجامعي',
                 'placeholderCheckStudentId': 'أدخل رقمك للاستعلام',
+                'labelPassword': 'كلمة المرور',
+                'placeholderPassword': 'أدخل كلمة المرور',
                 'buttonCheck': 'استعلم عن حجزي',
                 'resultsTitle': 'حجزك الحالي',
                 'resultName': 'الاسم:',
@@ -599,7 +622,11 @@
                 'msgErrorSameReservation': 'هذا هو نفس حجزك الحالي.',
                 'msgErrorUpdateFailed': 'لا يمكن العثور على حجزك الأصلي للتحديث.',
                 'msgErrorDeadline': 'انتهت فترة التعديل على الحجوزات (3/11/2025).',
-                'msgErrorGeneric': 'حدث خطأ: '
+                'msgErrorGeneric': 'حدث خطأ: ',
+                'msgErrorShortPassword': 'كلمة المرور يجب أن تكون 4 أحرف على الأقل.',
+                'msgErrorPasswordSet': 'لقد قمت بإنشاء كلمة مرور من قبل. اذهب إلى الاستعلام لتسجيل الدخول.',
+                'msgErrorPasswordNotSet': 'لم تقم بإنشاء كلمة مرور. يرجى عمل حجز جديد لإنشاء واحدة.',
+                'msgErrorIncorrectPassword': 'كلمة المرور غير صحيحة.'
             }
         };
         
@@ -614,6 +641,11 @@
             'The deadline for changing reservations (3/11/2025) has passed.': 'msgErrorDeadline',
             'Could not find your original reservation to update.': 'msgErrorUpdateFailed',
             'This is the same as your current reservation.': 'msgErrorSameReservation',
+            // New Password Messages
+            'Password must be at least 4 characters long.': 'msgErrorShortPassword',
+            'You have already set a password. Go to Check/Update to log in.': 'msgErrorPasswordSet',
+            'You have not set a password yet. Please make a new reservation to set one.': 'msgErrorPasswordNotSet',
+            'Incorrect password.': 'msgErrorIncorrectPassword',
         };
         // Keys for dynamic messages
         const dynamicMessageKeys = {
@@ -819,15 +851,15 @@
             const lang = translations[currentLanguage];
             showMessage(lang['loadingData'], 'success'); // Use 'success' for neutral bg
             
-            try {
-                // Use a POST request to fetch data
-                // This requires the doGet(e) function in Apps Script
-                const payload = { action: 'getCapacity' };
+            const payload = { action: 'getCapacity' };
 
+            try {
+                // Use POST for all requests, including fetching data
                 const response = await fetch(SCRIPT_URL, {
-                    method: 'POST', // CHANGED from GET
-                    body: JSON.stringify(payload), // ADDED
-                    headers: { 'Content-Type': 'text/plain;charset=utf-8' } // CHANGED
+                    method: 'POST',
+                    body: JSON.stringify(payload),
+                    headers: { 'Content-Type': 'text/plain' }, // Use text/plain to avoid preflight
+                    redirect: 'follow',
                 });
 
                 if (!response.ok) {
@@ -860,17 +892,20 @@
             showLoading();
 
             const studentId = document.getElementById('student-id').value;
+            const password = document.getElementById('student-password').value;
+            
             const data = {
                 action: 'submitReservation',
                 studentId: studentId,
                 location: selectedLocation,
-                period: selectedPeriod
+                period: selectedPeriod,
+                password: password
             };
 
             fetch(SCRIPT_URL, {
                 method: 'POST',
                 body: JSON.stringify(data),
-                headers: { 'Content-Type': 'text/plain;charset=utf-8' } // CHANGED
+                headers: { 'Content-Type': 'text/plain' }
             })
             .then(res => res.json())
             .then(response => {
@@ -899,12 +934,18 @@
             updateForm.style.display = 'none';
 
             const studentId = document.getElementById('check-student-id').value;
-            const data = { action: 'checkReservation', id: studentId };
+            const password = document.getElementById('check-password').value;
+            
+            const data = {
+                action: 'checkReservation',
+                id: studentId,
+                password: password
+            };
 
             fetch(SCRIPT_URL, {
                 method: 'POST',
                 body: JSON.stringify(data),
-                headers: { 'Content-Type': 'text/plain;charset=utf-8' } // CHANGED
+                headers: { 'Content-Type': 'text/plain' }
             })
             .then(res => res.json())
             .then(response => {
@@ -919,7 +960,10 @@
                     checkResults.style.display = 'block';
 
                     if (response.allowUpdate) {
+                        // Store ID and password for the update form
                         document.getElementById('update-student-id').value = bookingData.id;
+                        document.getElementById('update-password').value = password;
+                        // Set current selections
                         document.getElementById('update-location').value = bookingData.location;
                         document.getElementById('update-period').value = bookingData.period;
                         updateForm.style.display = 'block';
@@ -945,6 +989,7 @@
             const data = {
                 action: 'updateReservation',
                 id: document.getElementById('update-student-id').value,
+                password: document.getElementById('update-password').value,
                 newLocation: formData.get('updateLocation'),
                 newPeriod: formData.get('updatePeriod')
             };
@@ -952,7 +997,7 @@
             fetch(SCRIPT_URL, {
                 method: 'POST',
                 body: JSON.stringify(data),
-                headers: { 'Content-Type': 'text/plain;charset=utf-8' } // CHANGED
+                headers: { 'Content-Type': 'text/plain' }
             })
             .then(res => res.json())
             .then(response => {
@@ -983,6 +1028,4 @@
 
 </body>
 </html>
-
-
 
