@@ -313,6 +313,26 @@
             background-color: #a5b4fc;
             cursor: not-allowed;
         }
+
+        /* --- NEW: In-form Message Box --- */
+        .form-message {
+            display: none; /* Hidden by default */
+            padding: 12px;
+            margin-top: 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            text-align: center;
+        }
+        .form-message.success {
+            background-color: #d1fae5; /* Emerald-100 */
+            color: #065f46; /* Emerald-800 */
+            display: block;
+        }
+        .form-message.error {
+            background-color: #fee2e2; /* Red-100 */
+            color: #991b1b; /* Red-800 */
+            display: block;
+        }
         
         /* Check/Update Page specific styles */
         #check-results {
@@ -414,8 +434,7 @@
             <header class="page-header">
                 <img src="https://smartlearning.must.edu.eg/pluginfile.php/1/core_admin/logo/0x200/1715171530/logo.png" alt="University Logo" class="page-header-logo">
                 <h1 class="page-header-title" data-key="headerTitle">Exam Seat Reservation</h1>
-                <!-- UPDATED TEXT - Now uses strong tag from translation -->
-                <p class="page-header-subtitle" data-key="headerDate">Exam Date: Tuesday, 4 November 2025</p>
+                <p class="page-header-subtitle" data-key="headerDate"><strong>Exam Date:</strong> Tuesday, 4 November 2025</p>
                 <div class="course-info">
                     <p><strong data-key="labelCourseCode">Course Code:</strong> COMP101</p>
                     <p><strong data-key="labelInstructor">Instructor:</strong> Dr. Mohamed Ali</p>
@@ -433,8 +452,7 @@
             </main>
         </section>
 
-        <!-- ... (Rest of the pages remain the same) ... -->
-                <!-- ============================================= -->
+        <!-- ============================================= -->
         <!-- PAGE 2: CHOOSE PERIOD -->
         <!-- ============================================= -->
         <section id="page-periods" class="page">
@@ -485,6 +503,8 @@
                                 <input type="password" id="student-password" name="studentPassword" data-key-placeholder="placeholderCreatePassword" placeholder="Create a password for updates" required>
                             </div>
                             <button type="submit" class="form-button" data-key="buttonConfirmReserve">Confirm My Reservation</button>
+                            <!-- NEW: In-form message area -->
+                            <div id="reserve-form-message" class="form-message"></div>
                         </form>
                     </div>
                 </div>
@@ -516,6 +536,8 @@
                         <input type="password" id="check-password" name="checkPassword" data-key-placeholder="placeholderPassword" placeholder="Enter your password" required>
                     </div>
                     <button type="submit" class="form-button" data-key="buttonCheck">Check My Reservation</button>
+                    <!-- In-form message area for check page -->
+                    <div id="check-form-message" class="form-message"></div>
                 </form>
 
                 <!-- Check Results (hidden) -->
@@ -525,7 +547,7 @@
                     <p><strong data-key="resultPeriod">Period:</strong> <span id="result-period"></span></p>
                     <p><strong data-key="resultName">Name:</strong> <span id="result-name"></span></p>
                     <p><strong data-key="resultId">ID:</strong> <span id="result-id"></span></p>
-                    <p><strong data-key="resultDate">Reservation Date:</strong> <span id="result-date"></span></p> <!-- Updated Label Key -->
+                    <p><strong data-key="resultDate">Reservation Date:</strong> <span id="result-date"></span></p> 
                 </div>
 
                 <!-- Update Form (hidden) -->
@@ -556,6 +578,8 @@
                         </select>
                     </div>
                     <button type="submit" class="form-button" data-key="buttonUpdate">Update My Reservation</button>
+                    <!-- In-form message area for update form -->
+                    <div id="update-form-message" class="form-message"></div>
                 </form>
             </main>
         </section>
@@ -567,7 +591,7 @@
         <div class="spinner"></div>
     </div>
 
-    <!-- Message Modal -->
+    <!-- Message Modal (for general messages like loading) -->
     <div id="message-modal"></div>
 
     <script>
@@ -586,7 +610,6 @@
             'en': {
                 'pageTitle': 'Exam Seat Reservation',
                 'headerTitle': 'Exam Seat Reservation',
-                // UPDATED - Added strong tag
                 'headerDate': '<strong>Exam Date:</strong> Tuesday, 4 November 2025',
                 'labelCourseCode': 'Course Code:',
                 'labelInstructor': 'Instructor:',
@@ -646,7 +669,6 @@
             'ar': {
                 'pageTitle': 'حجز مقاعد الاختبار',
                 'headerTitle': 'حجز مقاعد الاختبار',
-                 // UPDATED - Added strong tag
                 'headerDate': '<strong>تاريخ الاختبار:</strong> الثلاثاء، 4 نوفمبر 2025',
                 'labelCourseCode': 'رمز المادة:',
                 'labelInstructor': 'المدرس:',
@@ -714,6 +736,7 @@
             'This ID already has a reservation. Check your reservation to make changes.': 'msgErrorAlreadyReserved',
             'Invalid period selected.': 'msgErrorInvalidPeriod',
             'No reservation found for this ID.': 'msgErrorNoReservation',
+            'No reservation found for this ID. You can make a new one.': 'msgErrorNoReservation', // Handle script variation
             'The deadline for changing reservations (3/11/2025) has passed.': 'msgErrorDeadline',
             'Could not find your original reservation to update.': 'msgErrorUpdateFailed',
             'This is the same as your current reservation.': 'msgErrorSameReservation',
@@ -721,7 +744,8 @@
             'You have already set a password. Go to Check/Update to log in.': 'msgErrorPasswordSet',
             'You have not set a password yet. Please make a new reservation to set one.': 'msgErrorPasswordNotSet',
             'Incorrect password.': 'msgErrorIncorrectPassword',
-            'Invalid lab selected.': 'msgErrorGeneric', 
+            'Invalid lab selected.': 'msgErrorGeneric',
+            'Reservation failed. Could not save password.': 'msgErrorGeneric'
         };
         // Keys for dynamic messages
         const dynamicMessageKeys = {
@@ -738,8 +762,11 @@
         const loadingOverlay = document.getElementById('loading-overlay');
         const messageModal = document.getElementById('message-modal');
         const reserveForm = document.getElementById('reserve-form');
+        const reserveFormMessage = document.getElementById('reserve-form-message'); // NEW
         const checkForm = document.getElementById('check-form');
+        const checkFormMessage = document.getElementById('check-form-message'); // NEW
         const updateForm = document.getElementById('update-form');
+        const updateFormMessage = document.getElementById('update-form-message'); // NEW
         const checkResults = document.getElementById('check-results');
         const locationCardsContainer = document.getElementById('location-cards-container');
         const periodCardsContainer = document.getElementById('period-cards-container');
@@ -753,7 +780,6 @@
             document.querySelectorAll('[data-key]').forEach(el => {
                 const key = el.getAttribute('data-key');
                 if (lang[key]) {
-                    // Use innerHTML for keys that might contain HTML (like headerDate)
                     if (key === 'headerDate') {
                          el.innerHTML = lang[key];
                     } else {
@@ -767,9 +793,8 @@
                 if (lang[key]) el.placeholder = lang[key];
             });
             
-            // Update lang toggle buttons
             document.querySelectorAll('[data-key-lang="langToggle"]').forEach(btn => {
-                btn.textContent = currentLanguage === 'en' ? 'En / ع' : 'En / ع'; // Always show both
+                btn.textContent = 'En / ع';
             });
             
             document.title = lang['pageTitle'];
@@ -778,16 +803,9 @@
         function toggleLanguage() {
             currentLanguage = currentLanguage === 'en' ? 'ar' : 'en';
             applyTranslations();
-            // Re-render cards if data is available
-            if (reservationData) {
-                buildLocationCards();
-            }
-            if (selectedLocation) {
-                buildPeriodCards(selectedLocation);
-            }
-            if (selectedLocation && selectedPeriod) {
-                updateReserveDetails();
-            }
+            if (reservationData) buildLocationCards();
+            if (selectedLocation) buildPeriodCards(selectedLocation);
+            if (selectedLocation && selectedPeriod) updateReserveDetails();
         }
 
         // --- Utility Functions ---
@@ -816,16 +834,32 @@
             return message; // Fallback
         }
 
-        function showMessage(message, type = 'success') {
+        // Use this for modal pop-ups (e.g., loading)
+        function showModalMessage(message, type = 'success') {
             messageModal.textContent = getTranslatedMessage(message);
             messageModal.className = type;
             messageModal.style.display = 'block';
             setTimeout(() => { messageModal.style.display = 'none'; }, 3000);
         }
 
+        // NEW: Use this for in-form messages
+        function showFormMessage(element, message, type = 'success') {
+            const msg = getTranslatedMessage(message);
+            element.textContent = msg;
+            element.className = `form-message ${type}`;
+        }
+        
+        function clearFormMessages() {
+            reserveFormMessage.style.display = 'none';
+            checkFormMessage.style.display = 'none';
+            updateFormMessage.style.display = 'none';
+        }
+
         function showPage(pageId) {
             document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
             document.getElementById(pageId).classList.add('active');
+            
+            clearFormMessages(); // Clear messages when switching pages
             
             if (pageId === 'page-welcome') {
                 reserveForm.reset();
@@ -933,10 +967,12 @@
 
         // --- Data Fetching Functions ---
         
-        async function fetchReservationData() {
-            showLoading();
-            const lang = translations[currentLanguage];
-            showMessage(lang['loadingData'], 'success'); 
+        async function fetchReservationData(isSilent = false) {
+            if (!isSilent) { // Only show loading UI on initial load
+                showLoading();
+                const lang = translations[currentLanguage];
+                showModalMessage(lang['loadingData'], 'success'); 
+            }
             
             const payload = { action: 'getCapacity' };
 
@@ -957,15 +993,15 @@
 
                 if (result.status === 'success') {
                     reservationData = result.data;
-                    buildLocationCards();
+                    buildLocationCards(); // Always refresh cards
                 } else {
                     throw new Error(result.message);
                 }
-                hideLoading();
+                if (!isSilent) hideLoading();
 
             } catch (error) {
-                hideLoading();
-                showMessage(lang['errorLoadingData'], 'error');
+                if (!isSilent) hideLoading();
+                showModalMessage(translations[currentLanguage]['errorLoadingData'], 'error');
                 console.error('Fetch Error:', error.message, ' - This often means the Google Apps Script has not been deployed or re-deployed correctly.');
             }
         }
@@ -977,6 +1013,7 @@
         reserveForm.addEventListener('submit', (e) => {
             e.preventDefault();
             showLoading();
+            clearFormMessages(); // Clear old messages
 
             const studentId = document.getElementById('student-id').value;
             const password = document.getElementById('student-password').value;
@@ -998,17 +1035,22 @@
             .then(response => {
                 hideLoading();
                 if (response.status === 'success') {
-                    showMessage(response.message, 'success');
+                    // Show success message IN THE FORM
+                    showFormMessage(reserveFormMessage, response.message, 'success');
                     reserveForm.reset();
-                    showPage('page-welcome');
-                    fetchReservationData(); 
+                    // Go back to home after a short delay
+                    setTimeout(() => {
+                         showPage('page-welcome');
+                         fetchReservationData(true); // Silently refresh data
+                    }, 2000);
                 } else {
-                    showMessage(response.message, 'error');
+                    // Show error message IN THE FORM
+                    showFormMessage(reserveFormMessage, response.message, 'error');
                 }
             })
             .catch(error => {
                 hideLoading();
-                showMessage('An error occurred: ' + error.message, 'error');
+                showFormMessage(reserveFormMessage, 'An error occurred: ' + error.message, 'error');
             });
         });
 
@@ -1016,6 +1058,7 @@
         checkForm.addEventListener('submit', (e) => {
             e.preventDefault();
             showLoading();
+            clearFormMessages();
             checkResults.style.display = 'none';
             updateForm.style.display = 'none';
 
@@ -1055,12 +1098,12 @@
                         updateForm.style.display = 'none'; 
                     }
                 } else {
-                    showMessage(response.message, 'error');
+                    showFormMessage(checkFormMessage, response.message, 'error');
                 }
             })
             .catch(error => {
                 hideLoading();
-                showMessage('An error occurred: ' + error.message, 'error');
+                showFormMessage(checkFormMessage, 'An error occurred: ' + error.message, 'error');
             });
         });
 
@@ -1068,6 +1111,7 @@
         updateForm.addEventListener('submit', (e) => {
             e.preventDefault();
             showLoading();
+            clearFormMessages();
 
             const formData = new FormData(updateForm);
             const data = {
@@ -1087,19 +1131,22 @@
             .then(response => {
                 hideLoading();
                 if (response.status === 'success') {
-                    showMessage(response.message, 'success');
-                    updateForm.style.display = 'none';
-                    checkResults.style.display = 'none';
-                    checkForm.reset();
-                    showPage('page-welcome'); 
-                    fetchReservationData(); 
+                    showFormMessage(updateFormMessage, response.message, 'success');
+                    // Hide forms and reset check form after a delay
+                    setTimeout(() => {
+                        updateForm.style.display = 'none';
+                        checkResults.style.display = 'none';
+                        checkForm.reset();
+                        showPage('page-welcome'); 
+                        fetchReservationData(true); // Silently refresh
+                    }, 2000);
                 } else {
-                    showMessage(response.message, 'error');
+                    showFormMessage(updateFormMessage, response.message, 'error');
                 }
             })
             .catch(error => {
                 hideLoading();
-                showMessage('An error occurred: ' + error.message, 'error');
+                showFormMessage(updateFormMessage, 'An error occurred: ' + error.message, 'error');
             });
         });
 
@@ -1134,7 +1181,7 @@
 
             // --- Initial Load ---
             applyTranslations();
-            fetchReservationData(); 
+            fetchReservationData(false); // Fetch data with loading UI
         });
     </script>
 
