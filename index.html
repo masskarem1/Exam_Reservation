@@ -1,231 +1,1103 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr">
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Exam Seat Reservation System</title>
-  <style>
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      margin: 0; padding: 0;
-      background: #f5f7fa;
-      color: #333;
-    }
-    header {
-      background: #004aad;
-      color: #fff;
-      text-align: center;
-      padding: 1rem;
-      position: sticky; top: 0;
-    }
-    .container {
-      max-width: 800px;
-      margin: 2rem auto;
-      background: #fff;
-      border-radius: 12px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-      padding: 2rem;
-      transition: 0.3s ease;
-    }
-    .hidden { display: none; }
-    button {
-      background: #004aad;
-      color: #fff;
-      border: none;
-      padding: 0.75rem 1.5rem;
-      border-radius: 6px;
-      font-size: 1rem;
-      cursor: pointer;
-      transition: 0.3s;
-    }
-    button:hover {
-      background: #00337a;
-    }
-    select, input {
-      width: 100%;
-      padding: 0.6rem;
-      margin: 0.5rem 0 1rem;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      font-size: 1rem;
-    }
-    .lang-switch {
-      position: absolute; top: 15px; right: 15px;
-      background: #fff; color: #004aad;
-      border: 1px solid #004aad;
-      font-size: 0.9rem;
-    }
-    h2 { color: #004aad; }
-    .fade-in { animation: fadeIn 0.5s ease; }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    footer {
-      text-align: center;
-      padding: 1rem;
-      color: #777;
-      font-size: 0.9rem;
-    }
-  </style>
-</head>
-<body>
-  <header>
-    <h1 id="title">Exam Seat Reservation</h1>
-    <button id="langBtn" class="lang-switch">العربية</button>
-  </header>
-
-  <main>
-    <div class="container fade-in" id="homePage">
-      <h2 id="welcomeTitle">Welcome</h2>
-      <p id="welcomeMsg">Please start your seat reservation process.</p>
-      <button onclick="nextPage('coursePage')">Start</button>
-    </div>
-
-    <div class="container hidden fade-in" id="coursePage">
-      <h2 id="courseTitle">Select Course</h2>
-      <select id="courseSelect">
-        <option value="">-- Choose Course --</option>
-        <option>PHYS101</option>
-        <option>PHYS102</option>
-        <option>PHYS201</option>
-      </select>
-      <button onclick="nextPage('labPage')">Next</button>
-    </div>
-
-    <div class="container hidden fade-in" id="labPage">
-      <h2 id="labTitle">Select Lab</h2>
-      <select id="labSelect">
-        <option value="">-- Choose Lab --</option>
-        <option>Lab A</option>
-        <option>Lab B</option>
-        <option>Lab C</option>
-      </select>
-      <button onclick="nextPage('periodPage')">Next</button>
-    </div>
-
-    <div class="container hidden fade-in" id="periodPage">
-      <h2 id="periodTitle">Select Period</h2>
-      <select id="periodSelect">
-        <option value="">-- Choose Period --</option>
-        <option>Morning</option>
-        <option>Afternoon</option>
-        <option>Evening</option>
-      </select>
-      <button onclick="nextPage('reservePage')">Next</button>
-    </div>
-
-    <div class="container hidden fade-in" id="reservePage">
-      <h2 id="reserveTitle">Seat Reservation</h2>
-      <label id="nameLabel" for="name">Name</label>
-      <input type="text" id="name" placeholder="Enter your name" />
-      <label id="idLabel" for="studentId">Student ID</label>
-      <input type="text" id="studentId" placeholder="Enter your ID" />
-      <button onclick="submitReservation()">Submit</button>
-    </div>
-
-    <div class="container hidden fade-in" id="confirmPage">
-      <h2 id="confirmTitle">Reservation Confirmed ✅</h2>
-      <p id="confirmMsg">Your seat has been successfully reserved.</p>
-      <button onclick="restart()">Home</button>
-    </div>
-  </main>
-
-  <footer>
-    &copy; 2025 Physics Department - Exam Seat System
-  </footer>
-
-  <script>
-    const pages = ['homePage', 'coursePage', 'labPage', 'periodPage', 'reservePage', 'confirmPage'];
-    let currentLang = 'en';
-
-    function nextPage(pageId) {
-      pages.forEach(p => document.getElementById(p).classList.add('hidden'));
-      document.getElementById(pageId).classList.remove('hidden');
-    }
-
-    function restart() {
-      document.getElementById('courseSelect').value = '';
-      document.getElementById('labSelect').value = '';
-      document.getElementById('periodSelect').value = '';
-      document.getElementById('name').value = '';
-      document.getElementById('studentId').value = '';
-      nextPage('homePage');
-    }
-
-    async function submitReservation() {
-      const data = {
-        name: document.getElementById('name').value.trim(),
-        studentId: document.getElementById('studentId').value.trim(),
-        course: document.getElementById('courseSelect').value,
-        lab: document.getElementById('labSelect').value,
-        period: document.getElementById('periodSelect').value
-      };
-
-      if (!data.name || !data.studentId || !data.course || !data.lab || !data.period) {
-        alert(currentLang === 'en' ? 'Please fill all fields.' : 'يرجى ملء جميع الحقول.');
-        return;
-      }
-
-      try {
-        // Connect this URL to your Google Apps Script endpoint
-        const response = await fetch("https://script.google.com/macros/s/AKfycbwf0UwMPYQ-DtVZEZ9EH3sBZW-y1KFQU7UT5TdwUgC1MrptesUmE8F4gDMZpKlBygXFBw/exec", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(data)
-        });
-        if (response.ok) nextPage('confirmPage');
-        else throw new Error('Network error');
-      } catch (err) {
-        alert(currentLang === 'en'
-          ? 'Submission failed. Please try again.'
-          : 'فشل الإرسال، يرجى المحاولة مرة أخرى.');
-      }
-    }
-
-    document.getElementById('langBtn').addEventListener('click', () => {
-      currentLang = currentLang === 'en' ? 'ar' : 'en';
-      document.documentElement.dir = currentLang === 'ar' ? 'rtl' : 'ltr';
-      updateLanguage();
-    });
-
-    function updateLanguage() {
-      const t = {
-        en: {
-          title: "Exam Seat Reservation",
-          welcomeTitle: "Welcome",
-          welcomeMsg: "Please start your seat reservation process.",
-          courseTitle: "Select Course",
-          labTitle: "Select Lab",
-          periodTitle: "Select Period",
-          reserveTitle: "Seat Reservation",
-          nameLabel: "Name",
-          idLabel: "Student ID",
-          confirmTitle: "Reservation Confirmed ✅",
-          confirmMsg: "Your seat has been successfully reserved.",
-          langBtn: "العربية"
-        },
-        ar: {
-          title: "نظام حجز مقعد الامتحان",
-          welcomeTitle: "مرحباً",
-          welcomeMsg: "الرجاء البدء في عملية حجز المقعد.",
-          courseTitle: "اختر المقرر",
-          labTitle: "اختر المعمل",
-          periodTitle: "اختر الفترة",
-          reserveTitle: "حجز المقعد",
-          nameLabel: "الاسم",
-          idLabel: "رقم الطالب",
-          confirmTitle: "تم تأكيد الحجز ✅",
-          confirmMsg: "تم حجز مقعدك بنجاح.",
-          langBtn: "English"
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-key="pageTitle">Exam Seat Reservation</title>
+    <style>
+        /* --- Base & Typography (WHITE THEME) --- */
+        :root {
+            --primary-color: #6366f1; /* Indigo */
+            --primary-light: #e0e7ff; /* Indigo-100 */
+            --secondary-color: #374151; /* Gray-700 */
+            --text-dark: #1f2937; /* Gray-800 - Default text */
+            --text-light: #f9fafb; /* Gray-50 - Text on buttons */
+            --text-muted: #6b7280; /* Gray-500 */
+            --success-color: #10b981; /* Emerald-500 */
+            --error-color: #ef4444; /* Red-500 */
+            --border-color: #e5e7eb; /* Gray-200 */
+            --card-bg: #ffffff; /* White */
+            --body-bg: #f8f9fa; /* Light Gray */
+            --font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            --font-family-ar: "Tahoma", "Arial", sans-serif;
         }
-      };
-      const L = t[currentLang];
-      for (let id in L) {
-        if (id === 'langBtn') document.getElementById(id).textContent = L[id];
-        else document.getElementById(id).textContent = L[id];
-      }
-    }
-  </script>
+
+        /* --- Body Styles --- */
+        body {
+            font-family: var(--font-family);
+            background-color: var(--body-bg); /* Light gray background */
+            margin: 0;
+            color: var(--text-dark); /* Default text is dark */
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            overflow-x: hidden;
+            height: 100%;
+        }
+        
+        /* --- Card Styles --- */
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            border-radius: 12px;
+            margin-bottom: 16px;
+            overflow: hidden;
+            transition: box-shadow 0.3s ease, transform 0.3s ease;
+        }
+
+        /* --- RTL Styles --- */
+        [dir="rtl"] { font-family: var(--font-family-ar); }
+        [dir="rtl"] .progress-label,
+        [dir="rtl"] .form-group label { text-align: right; }
+        [dir="rtl"] .page-header-actions { flex-direction: row-reverse; }
+        [dir="rtl"] .lang-toggle { margin-right: auto; margin-left: 0; }
+        [dir="rtl"] .back-button { transform: rotate(180deg); }
+        [dir="rtl"] .form-group input { text-align: right; }
+        [dir="rtl"] #check-results p strong { margin-right: 0; margin-left: 8px; }
+        [dir="rtl"] .step1-title { text-align: right; } /* RTL alignment for Step 1 title */
+
+        /* --- Page Container --- */
+        .app-container {
+            max-width: 600px;
+            margin: 0 auto;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background-color: var(--body-bg);
+        }
+
+        /* --- Page Sections (Views) --- */
+        .page {
+            display: none; /* All pages hidden by default */
+            flex-direction: column;
+            flex-grow: 1;
+            animation: fadeIn 0.3s ease-out;
+        }
+        .page.active {
+            display: flex;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- Page Header --- */
+        .page-header {
+            padding: 24px 20px;
+            position: relative;
+            text-align: center;
+            background: var(--card-bg);
+            border-bottom: 1px solid var(--border-color);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            border-radius: 0 0 24px 24px;
+            margin-bottom: 24px;
+        }
+        .page-header-logo {
+            height: 60px;
+            margin-bottom: 16px;
+        }
+        .page-header-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin: 0;
+            text-align: center;
+        }
+        .page-header-subtitle {
+            font-size: 0.9rem;
+            margin: 4px 0 0;
+            color: var(--text-muted);
+            text-align: center;
+        }
+        .page-header-actions {
+            display: flex;
+            align-items: center;
+            margin-top: 16px;
+        }
+        .action-button, .back-button, .lang-toggle {
+            font-family: inherit;
+            font-weight: 600;
+            font-size: 0.875rem;
+            padding: 8px 14px;
+            border: 1px solid var(--border-color);
+            background-color: var(--card-bg);
+            color: var(--secondary-color);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .action-button:hover, .back-button:hover, .lang-toggle:hover {
+            background-color: #f9fafb; /* Gray-50 */
+            border-color: #d1d5db; /* Gray-300 */
+        }
+        .lang-toggle {
+            margin-left: auto;
+        }
+        .back-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 8px;
+            margin-right: 12px;
+        }
+        
+        /* --- Page Content --- */
+        .page-content {
+            padding: 0 24px 24px 24px;
+            flex-grow: 1;
+        }
+        .page-content h2 {
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-top: 0;
+            color: var(--text-dark);
+            text-align: left; /* Default LTR alignment for Step 1 title */
+        }
+
+        /* --- Cards (Location & Period) --- */
+        .card-clickable {
+            cursor: pointer;
+        }
+        .card-clickable:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.07), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .card-header {
+            padding: 20px;
+        }
+        .card-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin: 0;
+            text-align: center;
+        }
+        .card-subtitle {
+            font-size: 0.875rem;
+            margin: 4px 0 0;
+            color: var(--text-muted);
+            text-align: center;
+        }
+        .card-body {
+            padding: 20px;
+        }
+        .card-body.full {
+            opacity: 0.7;
+        }
+        
+        /* --- Progress Bar --- */
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.875rem;
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: var(--text-muted);
+        }
+        .progress-track {
+            height: 10px;
+            background-color: var(--border-color);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-light), var(--primary-color));
+            width: 0%;
+            border-radius: 5px;
+            transition: width 0.5s ease-out;
+        }
+        .progress-bar.high-capacity {
+            background: linear-gradient(90deg, #fde68a, #f59e0b); /* Amber */
+        }
+        .progress-bar.full {
+            background: linear-gradient(90deg, #fca5a5, var(--error-color)); /* Red */
+        }
+        .status-full {
+            font-weight: 700;
+            color: var(--error-color);
+        }
+
+        /* --- Form --- */
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--text-dark);
+        }
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 12px;
+            font-size: 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            box-sizing: border-box; /* Important for padding */
+            font-family: inherit;
+            background-color: #ffffff;
+            color: var(--text-dark);
+        }
+        .form-group input::placeholder {
+            color: #9ca3af; /* Gray-400 */
+        }
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            background-color: #ffffff;
+            box-shadow: 0 0 0 2px var(--primary-light);
+        }
+        /* Style for Select Dropdown */
+        .form-group select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            background-size: 1em;
+            padding-right: 40px;
+        }
+        .form-group select option {
+            background-color: #ffffff;
+            color: var(--text-dark);
+        }
+        
+        .form-button {
+            width: 100%;
+            padding: 14px;
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--text-light);
+            background-color: var(--primary-color);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .form-button:hover {
+            background-color: #4f46e5; /* Indigo-700 */
+            box-shadow: 0 4px 20px rgba(99, 102, 241, 0.4);
+        }
+        .form-button:disabled {
+            background-color: #a5b4fc;
+            cursor: not-allowed;
+        }
+        
+        /* Check/Update Page specific styles */
+        #check-results {
+            display: none;
+            margin-top: 24px;
+            padding: 20px;
+            border-radius: 12px;
+            background-color: #f9fafb; /* Gray-50 */
+            border: 1px solid var(--border-color);
+        }
+        #check-results h3 {
+            margin-top: 0;
+            color: var(--text-dark);
+            text-align: center;
+        }
+        #check-results p {
+            margin: 8px 0;
+            font-size: 1rem;
+            line-height: 1.5;
+            color: var(--text-dark);
+        }
+        #check-results p strong {
+            color: var(--text-muted);
+            margin-right: 8px;
+        }
+        #update-form {
+            display: none;
+            margin-top: 24px;
+            padding-top: 24px;
+            border-top: 1px dashed var(--border-color);
+        }
+        #update-form h3 {
+            text-align: center;
+            color: var(--text-dark);
+            margin-top: 0;
+        }
+        #update-form .update-warning {
+            text-align:center; 
+            color: var(--error-color); 
+            font-weight: 600;
+        }
+
+        /* --- Loading & Message Modals --- */
+        #loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(248, 249, 250, 0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            backdrop-filter: blur(5px);
+        }
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(0, 0, 0, 0.1);
+            border-top: 5px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        #message-modal {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 16px 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            font-size: 1rem;
+            font-weight: 600;
+            color: white;
+            z-index: 1001;
+            display: none;
+            text-align: center;
+            max-width: 90%;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+        #message-modal.success { background-color: var(--success-color); }
+        #message-modal.error { background-color: var(--error-color); }
+    </style>
+</head>
+<body dir="ltr">
+
+    <div class="app-container">
+
+        <!-- ============================================= -->
+        <!-- PAGE 1: CHOOSE LOCATION (WELCOME) -->
+        <!-- ============================================= -->
+        <section id="page-welcome" class="page active">
+            <header class="page-header">
+                <img src="https://smartlearning.must.edu.eg/pluginfile.php/1/core_admin/logo/0x200/1715171530/logo.png" alt="University Logo" class="page-header-logo">
+                <h1 class="page-header-title" data-key="headerTitle">Exam Seat Reservation</h1>
+                <p class="page-header-subtitle" data-key="headerDate">Tuesday, 4 November 2025</p>
+                <div class="page-header-actions">
+                    <button class="action-button" id="btn-goto-check" data-key="tabCheck">Check/Update Reservation</button>
+                    <button class="lang-toggle" id="lang-toggle-welcome" data-key-lang="langToggle">En / ع</button>
+                </div>
+            </header>
+            <main class="page-content">
+                <h2 data-key="welcomeStep1" class="step1-title">Step 1: Choose a Lab</h2>
+                <div id="location-cards-container">
+                    <!-- Location cards will be dynamically inserted here -->
+                </div>
+            </main>
+        </section>
+
+        <!-- ============================================= -->
+        <!-- PAGE 2: CHOOSE PERIOD -->
+        <!-- ============================================= -->
+        <section id="page-periods" class="page">
+            <header class="page-header">
+                <div class="page-header-actions" style="margin-top: 0;">
+                    <button class="back-button" id="btn-periods-back">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" /></svg>
+                    </button>
+                    <button class="lang-toggle" id="lang-toggle-periods" data-key-lang="langToggle">En / ع</button>
+                </div>
+                <h1 id="periods-page-title" class="page-header-title" style="margin-top: 16px;"></h1>
+                <p class="page-header-subtitle" data-key="periodsStep2">Step 2: Choose an available time slot</p>
+            </header>
+            <main class="page-content">
+                <div id="period-cards-container">
+                    <!-- Period cards will be dynamically inserted here -->
+                </div>
+            </main>
+        </section>
+
+        <!-- ============================================= -->
+        <!-- PAGE 3: ENTER ID & CONFIRM -->
+        <!-- ============================================= -->
+        <section id="page-reserve" class="page">
+            <header class="page-header">
+                <div class="page-header-actions" style="margin-top: 0;">
+                    <button class="back-button" id="btn-reserve-back">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" /></svg>
+                    </button>
+                    <button class="lang-toggle" id="lang-toggle-reserve" data-key-lang="langToggle">En / ع</button>
+                </div>
+                <h1 class="page-header-title" data-key="reserveStep3" style="margin-top: 16px;">Step 3: Confirm Reservation</h1>
+            </header>
+            <main class="page-content">
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title" data-key="reserveYourSeat">Your Seat</h2>
+                        <p class="card-subtitle" id="reserve-details"></p>
+                    </div>
+                    <div class="card-body">
+                        <form id="reserve-form">
+                            <div class="form-group">
+                                <label for="student-id" data-key="labelStudentId">Student ID</label>
+                                <input type="text" id="student-id" name="studentId" data-key-placeholder="placeholderStudentId" placeholder="Enter your 7-digit ID" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="student-password" data-key="labelCreatePassword">Create Password (min 4 chars)</label>
+                                <input type="password" id="student-password" name="studentPassword" data-key-placeholder="placeholderCreatePassword" placeholder="Create a password for updates" required>
+                            </div>
+                            <button type="submit" class="form-button" data-key="buttonConfirmReserve">Confirm My Reservation</button>
+                        </form>
+                    </div>
+                </div>
+            </main>
+        </section>
+
+        <!-- ============================================= -->
+        <!-- PAGE 4: CHECK/UPDATE RESERVATION -->
+        <!-- ============================================= -->
+        <section id="page-check" class="page">
+            <header class="page-header">
+                <div class="page-header-actions" style="margin-top: 0;">
+                    <button class="back-button" id="btn-check-back">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" /></svg>
+                    </button>
+                    <button class="lang-toggle" id="lang-toggle-check" data-key-lang="langToggle">En / ع</button>
+                </div>
+                <h1 class="page-header-title" data-key="tabCheck" style="margin-top: 16px;">Check/Update Reservation</h1>
+            </header>
+            <main class="page-content">
+                <!-- Check Form -->
+                <form id="check-form" class="card card-body">
+                    <div class="form-group">
+                        <label for="check-student-id" data-key="labelCheckStudentId">Student ID</label>
+                        <input type="text" id="check-student-id" name="checkStudentId" data-key-placeholder="placeholderCheckStudentId" placeholder="Enter your ID to check" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="check-password" data-key="labelPassword">Password</label>
+                        <input type="password" id="check-password" name="checkPassword" data-key-placeholder="placeholderPassword" placeholder="Enter your password" required>
+                    </div>
+                    <button type="submit" class="form-button" data-key="buttonCheck">Check My Reservation</button>
+                </form>
+
+                <!-- Check Results (hidden) -->
+                <div id="check-results">
+                    <h3 data-key="resultsTitle">Your Current Reservation</h3>
+                    <p><strong data-key="resultLocation">Lab:</strong> <span id="result-location"></span></p>
+                    <p><strong data-key="resultPeriod">Period:</strong> <span id="result-period"></span></p>
+                    <p><strong data-key="resultName">Name:</strong> <span id="result-name"></span></p>
+                    <p><strong data-key="resultId">ID:</strong> <span id="result-id"></span></p>
+                    <p><strong data-key="resultDate">Date:</strong> <span id="result-date"></span></p>
+                </div>
+
+                <!-- Update Form (hidden) -->
+                <form id="update-form" class="card card-body" style="margin-top: 24px;">
+                    <h3 data-key="updateTitle">Change Your Reservation</h3>
+                    <p class="update-warning" data-key="updateWarning">Reservation changes are allowed until 3/11/2025.</p>
+                    <input type="hidden" id="update-student-id" name="updateStudentId">
+                    <input type="hidden" id="update-password" name="updatePassword">
+                    
+                    <div class="form-group">
+                        <label for="update-location" data-key="labelUpdateLocation">New Lab</label>
+                        <select id="update-location" name="updateLocation" required>
+                            <option value="" disabled selected data-key="optionChooseLocation">-- Choose a new lab --</option>
+                            <option value="316 LB SS">316 LB SS</option>
+                            <option value="317 LB SS">317 LB SS</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="update-period" data-key="labelUpdatePeriod">New Period</label>
+                        <select id="update-period" name="updatePeriod" required>
+                            <option value="" disabled selected data-key="optionChoosePeriod">-- Choose a new time slot --</option>
+                            <option value="10:00 - 10:35">10:00 - 10:35</option>
+                            <option value="10:40 - 11:15">10:40 - 11:15</option>
+                            <option value="11:20 - 11:55">11:20 - 11:55</option>
+                            <option value="12:00 - 12:35">12:00 - 12:35</option>
+                            <option value="12:40 - 1:15">12:40 - 1:15</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="form-button" data-key="buttonUpdate">Update My Reservation</button>
+                </form>
+            </main>
+        </section>
+
+    </div> <!-- /app-container -->
+
+    <!-- Loading Spinner Overlay -->
+    <div id="loading-overlay">
+        <div class="spinner"></div>
+    </div>
+
+    <!-- Message Modal -->
+    <div id="message-modal"></div>
+
+    <script>
+        // --- Configuration ---
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwf0UwMPYQ-DtVZEZ9EH3sBZW-y1KFQU7UT5TdwUgC1MrptesUmE8F4gDMZpKlBygXFBw/exec";
+        const PERIODS = [
+            "10:00 - 10:35",
+            "10:40 - 11:15",
+            "11:20 - 11:55",
+            "12:00 - 12:35",
+            "12:40 - 1:15"
+        ];
+        
+        // --- Language Translations ---
+        const translations = {
+            'en': {
+                'pageTitle': 'Exam Seat Reservation',
+                'headerTitle': 'Exam Seat Reservation',
+                'headerDate': 'Tuesday, 4 November 2025',
+                'tabCheck': 'Check/Update Reservation',
+                'welcomeStep1': 'Step 1: Choose a Lab',
+                'periodsStep2': 'Step 2: Choose an available time slot',
+                'reserveStep3': 'Step 3: Confirm Reservation',
+                'reserveYourSeat': 'Your Seat',
+                'labelStudentId': 'Student ID',
+                'placeholderStudentId': 'Enter your 7-digit ID',
+                'labelCreatePassword': 'Create Password (min 4 chars)',
+                'placeholderCreatePassword': 'Create a password for updates',
+                'buttonConfirmReserve': 'Confirm My Reservation',
+                'labelCheckStudentId': 'Student ID',
+                'placeholderCheckStudentId': 'Enter your ID to check',
+                'labelPassword': 'Password',
+                'placeholderPassword': 'Enter your password',
+                'buttonCheck': 'Check My Reservation',
+                'resultsTitle': 'Your Current Reservation',
+                'resultName': 'Name:',
+                'resultId': 'ID:',
+                'resultDate': 'Date:',
+                'resultLocation': 'Lab:',
+                'resultPeriod': 'Period:',
+                'updateTitle': 'Change Your Reservation',
+                'updateWarning': 'Reservation changes are allowed until 3/11/2025.',
+                'labelUpdateLocation': 'New Lab',
+                'labelUpdatePeriod': 'New Period',
+                'buttonUpdate': 'Update My Reservation',
+                'optionChooseLocation': '-- Choose a new lab --',
+                'optionChoosePeriod': '-- Choose a new time slot --',
+                'capacity': 'Capacity',
+                'reserved': 'Reserved',
+                'remaining': 'Remaining',
+                'full': 'Full',
+                'detailsFor': 'time slots', // e.g., "316 LB SS time slots"
+                'confirming_at': 'at', // e.g., "316 LB SS at 10:00 - 10:35"
+                'loadingData': 'Loading capacity data...',
+                'errorLoadingData': 'Error loading data. Please refresh.',
+                // Messages
+                'msgSuccess': 'Reservation successful! Your seat is booked.',
+                'msgSuccessUpdate': 'Your reservation has been successfully updated.',
+                'msgErrorIDNotFound': 'Student ID not found in the registration list.',
+                'msgErrorAlreadyReserved': 'This ID already has a reservation. Check your reservation to make changes.',
+                'msgErrorCapacity': 'is full for this period.',
+                'msgErrorInvalidPeriod': 'Invalid period selected.',
+                'msgErrorNoReservation': 'No reservation found for this ID.',
+                'msgErrorSameReservation': 'This is the same as your current reservation.',
+                'msgErrorUpdateFailed': 'Could not find your original reservation to update.',
+                'msgErrorDeadline': 'The deadline for changing reservations (3/11/2025) has passed.',
+                'msgErrorGeneric': 'An error occurred: ',
+                'msgErrorShortPassword': 'Password must be at least 4 characters long.',
+                'msgErrorPasswordSet': 'You have already set a password. Go to Check/Update to log in.',
+                'msgErrorPasswordNotSet': 'You have not set a password yet. Please make a new reservation to set one.',
+                'msgErrorIncorrectPassword': 'Incorrect password.'
+            },
+            'ar': {
+                'pageTitle': 'حجز مقاعد الاختبار',
+                'headerTitle': 'حجز مقاعد الاختبار',
+                'headerDate': 'الثلاثاء، 4 نوفمبر 2025',
+                'tabCheck': 'الاستعلام/تحديث الحجز',
+                'welcomeStep1': 'الخطوة 1: اختر المعمل',
+                'periodsStep2': 'الخطوة 2: اختر الفترة الزمنية المتاحة',
+                'reserveStep3': 'الخطوة 3: تأكيد الحجز',
+                'reserveYourSeat': 'مقعدك',
+                'labelStudentId': 'الرقم الجامعي',
+                'placeholderStudentId': 'أدخل رقمك المكون من 7 أرقام',
+                'labelCreatePassword': 'إنشاء كلمة مرور (4 أحرف على الأقل)',
+                'placeholderCreatePassword': 'أنشئ كلمة مرور للتحديثات',
+                'buttonConfirmReserve': 'تأكيد حجزي',
+                'labelCheckStudentId': 'الرقم الجامعي',
+                'placeholderCheckStudentId': 'أدخل رقمك للاستعلام',
+                'labelPassword': 'كلمة المرور',
+                'placeholderPassword': 'أدخل كلمة المرور',
+                'buttonCheck': 'استعلم عن حجزي',
+                'resultsTitle': 'حجزك الحالي',
+                'resultName': 'الاسم:',
+                'resultId': 'الرقم الجامعي:',
+                'resultDate': 'التاريخ:',
+                'resultLocation': 'المعمل:',
+                'resultPeriod': 'الفترة:',
+                'updateTitle': 'تغيير حجزك',
+                'updateWarning': 'التغيير متاح حتى 3/11/2025.',
+                'labelUpdateLocation': 'المعمل الجديد',
+                'labelUpdatePeriod': 'الفترة الجديدة',
+                'buttonUpdate': 'تحديث حجزي',
+                'optionChooseLocation': '-- اختر معمل --',
+                'optionChoosePeriod': '-- اختر فترة زمنية --',
+                'capacity': 'السعة',
+                'reserved': 'محجوز',
+                'remaining': 'متبقي',
+                'full': 'ممتلئ',
+                'detailsFor': 'الفترات الزمنية', // e.g., "الفترات الزمنية - 316 LB SS"
+                'confirming_at': 'في', // e.g., "316 LB SS في 10:00 - 10:35"
+                'loadingData': 'جاري تحميل البيانات...',
+                'errorLoadingData': 'خطأ في تحميل البيانات. يرجى التحديث.',
+                // Messages
+                'msgSuccess': 'تم الحجز بنجاح!',
+                'msgSuccessUpdate': 'تم تحديث حجزك بنجاح.',
+                'msgErrorIDNotFound': 'الرقم الجامعي غير موجود في قائمة التسجيل.',
+                'msgErrorAlreadyReserved': 'هذا الرقم لديه حجز بالفعل. يمكنك الاستعلام لتغيير الحجز.',
+                'msgErrorCapacity': 'ممتلئ في الفترة المحددة.',
+                'msgErrorInvalidPeriod': 'فترة زمنية غير صالحة.',
+                'msgErrorNoReservation': 'لم يتم العثور على حجز لهذا الرقم.',
+                'msgErrorSameReservation': 'هذا هو نفس حجزك الحالي.',
+                'msgErrorUpdateFailed': 'لا يمكن العثور على حجزك الأصلي للتحديث.',
+                'msgErrorDeadline': 'انتهت فترة التعديل على الحجوزات (3/11/2025).',
+                'msgErrorGeneric': 'حدث خطأ: ',
+                'msgErrorShortPassword': 'كلمة المرور يجب أن تكون 4 أحرف على الأقل.',
+                'msgErrorPasswordSet': 'لقد قمت بإنشاء كلمة مرور من قبل. اذهب إلى الاستعلام لتسجيل الدخول.',
+                'msgErrorPasswordNotSet': 'لم تقم بإنشاء كلمة مرور. يرجى عمل حجز جديد لإنشاء واحدة.',
+                'msgErrorIncorrectPassword': 'كلمة المرور غير صحيحة.'
+            }
+        };
+        
+        // Map of English messages from GAS to translation keys
+        const messageKeys = {
+            'Reservation successful! Your seat is booked.': 'msgSuccess',
+            'Your reservation has been successfully updated.': 'msgSuccessUpdate',
+            'Student ID not found in the registration list.': 'msgErrorIDNotFound',
+            'This ID already has a reservation. Check your reservation to make changes.': 'msgErrorAlreadyReserved',
+            'Invalid period selected.': 'msgErrorInvalidPeriod',
+            'No reservation found for this ID.': 'msgErrorNoReservation',
+            'The deadline for changing reservations (3/11/2025) has passed.': 'msgErrorDeadline',
+            'Could not find your original reservation to update.': 'msgErrorUpdateFailed',
+            'This is the same as your current reservation.': 'msgErrorSameReservation',
+            // New Password Messages
+            'Password must be at least 4 characters long.': 'msgErrorShortPassword',
+            'You have already set a password. Go to Check/Update to log in.': 'msgErrorPasswordSet',
+            'You have not set a password yet. Please make a new reservation to set one.': 'msgErrorPasswordNotSet',
+            'Incorrect password.': 'msgErrorIncorrectPassword',
+            'Invalid Student ID format. Must be 7 digits.': 'msgErrorIDNotFound', // Re-use for simplicity
+            'Invalid lab selected.': 'msgErrorGeneric', // Use generic error
+        };
+        // Keys for dynamic messages
+        const dynamicMessageKeys = {
+            'is full for this period': 'msgErrorCapacity',
+        };
+
+        // --- App State ---
+        let currentLanguage = 'en';
+        let reservationData = null;
+        let selectedLocation = null;
+        let selectedPeriod = null;
+
+        // --- DOM Elements ---
+        const loadingOverlay = document.getElementById('loading-overlay');
+        const messageModal = document.getElementById('message-modal');
+        const reserveForm = document.getElementById('reserve-form');
+        const checkForm = document.getElementById('check-form');
+        const updateForm = document.getElementById('update-form');
+        const checkResults = document.getElementById('check-results');
+        const locationCardsContainer = document.getElementById('location-cards-container');
+        const periodCardsContainer = document.getElementById('period-cards-container');
+        
+        // --- Language Functions ---
+        function applyTranslations() {
+            const lang = translations[currentLanguage];
+            document.documentElement.lang = currentLanguage;
+            document.body.dir = currentLanguage === 'ar' ? 'rtl' : 'ltr';
+
+            document.querySelectorAll('[data-key]').forEach(el => {
+                const key = el.getAttribute('data-key');
+                if (lang[key]) el.textContent = lang[key];
+            });
+            
+            document.querySelectorAll('[data-key-placeholder]').forEach(el => {
+                const key = el.getAttribute('data-key-placeholder');
+                if (lang[key]) el.placeholder = lang[key];
+            });
+            
+            // Update lang toggle buttons
+            document.querySelectorAll('[data-key-lang="langToggle"]').forEach(btn => {
+                btn.textContent = currentLanguage === 'en' ? 'En / ع' : 'En / ع';
+            });
+            
+            document.title = lang['pageTitle'];
+        }
+
+        function toggleLanguage() {
+            currentLanguage = currentLanguage === 'en' ? 'ar' : 'en';
+            applyTranslations();
+            // Re-render cards if data is available
+            if (reservationData) {
+                buildLocationCards();
+            }
+            if (selectedLocation) {
+                buildPeriodCards(selectedLocation);
+            }
+            if (selectedLocation && selectedPeriod) {
+                updateReserveDetails();
+            }
+        }
+
+        // --- Utility Functions ---
+        function showLoading() { loadingOverlay.style.display = 'flex'; }
+        function hideLoading() { loadingOverlay.style.display = 'none'; }
+        
+        function getTranslatedMessage(message) {
+            const lang = translations[currentLanguage];
+            let key = messageKeys[message];
+            if (key && lang[key]) return lang[key];
+            
+            for (const partial in dynamicMessageKeys) {
+                if (message.includes(partial)) {
+                    key = dynamicMessageKeys[partial];
+                    // Extract dynamic part (location)
+                    const location = message.split(' is full')[0].substring('Sorry, '.length).trim();
+                    // Reconstruct message
+                    return (currentLanguage === 'ar') ? 
+                        `${lang[key]} - ${location}` : 
+                        `Sorry, ${location} ${lang[key]}`;
+                }
+            }
+            
+            if (message.startsWith('An error occurred: ')) {
+                const errorDetails = message.substring('An error occurred: '.length);
+                return lang['msgErrorGeneric'] + errorDetails;
+            }
+            return message; // Fallback
+        }
+
+        function showMessage(message, type = 'success') {
+            messageModal.textContent = getTranslatedMessage(message);
+            messageModal.className = type;
+            messageModal.style.display = 'block';
+            setTimeout(() => { messageModal.style.display = 'none'; }, 3000);
+        }
+
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
+            
+            // Reset forms when switching pages
+            if (pageId === 'page-welcome') {
+                reserveForm.reset();
+                checkForm.reset();
+                updateForm.style.display = 'none';
+                checkResults.style.display = 'none';
+            }
+        }
+
+        // --- New UI-Building Functions ---
+        
+        function buildLocationCards() {
+            if (!reservationData) return;
+            const lang = translations[currentLanguage];
+            locationCardsContainer.innerHTML = ''; // Clear existing
+            
+            for (const locationName in reservationData) {
+                const location = reservationData[locationName];
+                const total = location.total;
+                
+                const card = document.createElement('div');
+                card.className = 'card card-clickable';
+                card.dataset.location = locationName; // Add data-set for event listener
+                
+                card.innerHTML = `
+                    <div class="card-header">
+                        <h2 class="card-title">${locationName}</h2>
+                        <p class="card-subtitle" data-key="capacity">${lang['capacity']}: ${total}</p>
+                    </div>
+                `;
+                locationCardsContainer.appendChild(card);
+            }
+        }
+        
+        function buildPeriodCards(locationName) {
+            if (!reservationData) return;
+            const lang = translations[currentLanguage];
+            periodCardsContainer.innerHTML = ''; // Clear existing
+            
+            // Set Page Title
+            const titleEl = document.getElementById('periods-page-title');
+            if (currentLanguage === 'ar') {
+                titleEl.textContent = `${lang['detailsFor']} - ${locationName}`;
+            } else {
+                titleEl.textContent = `${locationName} ${lang['detailsFor']}`;
+            }
+
+
+            const location = reservationData[locationName];
+            const total = location.total;
+
+            PERIODS.forEach(periodName => {
+                const reserved = location.periods[periodName];
+                const remaining = total - reserved;
+                const percentage = total > 0 ? (reserved / total) * 100 : 0;
+                const isFull = remaining <= 0;
+                
+                let progressClass = 'progress-bar';
+                if (percentage > 80) progressClass += ' high-capacity';
+                if (isFull) progressClass += ' full';
+                
+                const card = document.createElement('div');
+                card.className = 'card' + (isFull ? '' : ' card-clickable');
+                if (!isFull) {
+                    card.dataset.period = periodName; // Add data-set for event listener
+                }
+                
+                card.innerHTML = `
+                    <div class="card-body ${isFull ? 'full' : ''}">
+                        <h3 class="card-title">${periodName}</h3>
+                        <div class="progress-label">
+                            <span>
+                                <span data-key="reserved">${lang['reserved']}</span>: ${reserved}
+                            </span>
+                            ${isFull ? 
+                                `<span class="status-full" data-key="full">${lang['full']}</span>` : 
+                                `<span><span data-key="remaining">${lang['remaining']}</span>: ${remaining}</span>`
+                            }
+                        </div>
+                        <div class="progress-track">
+                            <div class="${progressClass}" style="width: ${percentage}%"></div>
+                        </div>
+                    </div>
+                `;
+                periodCardsContainer.appendChild(card);
+            });
+        }
+        
+        function updateReserveDetails() {
+            const lang = translations[currentLanguage];
+            document.getElementById('reserve-details').textContent = `${selectedLocation} ${lang['confirming_at']} ${selectedPeriod}`;
+        }
+        
+        // --- New Navigation Handlers ---
+
+        function selectLocation(locationName) {
+            selectedLocation = locationName;
+            buildPeriodCards(locationName);
+            showPage('page-periods');
+        }
+
+        function selectPeriod(periodName) {
+            selectedPeriod = periodName;
+            updateReserveDetails();
+            showPage('page-reserve');
+        }
+
+        // --- Data Fetching Functions ---
+        
+        async function fetchReservationData() {
+            showLoading();
+            const lang = translations[currentLanguage];
+            showMessage(lang['loadingData'], 'success'); // Use 'success' for neutral bg
+            
+            const payload = { action: 'getCapacity' };
+
+            try {
+                // Use POST for all requests, including fetching data
+                const response = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    body: JSON.stringify(payload),
+                    headers: { 'Content-Type': 'text/plain' }, // Use text/plain to avoid preflight
+                    redirect: 'follow',
+                    mode: 'cors' // Explicitly set mode
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Network response was not ok (${response.status} ${response.statusText})`);
+                }
+
+                const result = await response.json();
+
+                if (result.status === 'success') {
+                    reservationData = result.data;
+                    buildLocationCards();
+                } else {
+                    throw new Error(result.message);
+                }
+                hideLoading();
+
+            } catch (error) {
+                hideLoading();
+                showMessage(lang['errorLoadingData'], 'error');
+                console.error('Fetch Error:', error.message, ' - This often means the Google Apps Script has not been deployed or re-deployed correctly.');
+            }
+        }
+
+
+        // --- Event Handlers (Adapted) ---
+
+        /** 1. Handle New Reservation Submission */
+        reserveForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            showLoading();
+
+            const studentId = document.getElementById('student-id').value;
+            const password = document.getElementById('student-password').value;
+            
+            const data = {
+                action: 'submitReservation',
+                studentId: studentId,
+                location: selectedLocation,
+                period: selectedPeriod,
+                password: password
+            };
+
+            fetch(SCRIPT_URL, {
+                method: 'POST',
+                body: JSON.stringify(data),
+                headers: { 'Content-Type': 'text/plain' }
+            })
+            .then(res => res.json())
+            .then(response => {
+                hideLoading();
+                if (response.status === 'success') {
+                    showMessage(response.message, 'success');
+                    reserveForm.reset();
+                    showPage('page-welcome');
+                    // Refresh data after successful booking
+                    fetchReservationData(); 
+                } else {
+                    showMessage(response.message, 'error');
+                }
+            })
+            .catch(error => {
+                hideLoading();
+                showMessage('An error occurred: ' + error.message, 'error');
+            });
+        });
+
+        /** 2. Handle Check Reservation */
+        checkForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            showLoading();
+            checkResults.style.display = 'none';
+            updateForm.style.display = 'none';
+
+            const studentId = document.getElementById('check-student-id').value;
+            const password = document.getElementById('check-password').value;
+            
+            const data = {
+                action: 'checkReservation',
+                id: studentId,
+                password: password
+            };
+
+            fetch(SCRIPT_URL, {
+                method: 'POST',
+                body: JSON.stringify(data),
+                headers: { 'Content-Type': 'text/plain' }
+            })
+            .then(res => res.json())
+            .then(response => {
+                hideLoading();
+                if (response.status === 'success') {
+                    const bookingData = response.data;
+                    document.getElementById('result-name').textContent = bookingData.name;
+                    document.getElementById('result-id').textContent = bookingData.id;
+                    document.getElementById('result-date').textContent = bookingData.date;
+                    document.getElementById('result-location').textContent = bookingData.location;
+                    document.getElementById('result-period').textContent = bookingData.period;
+                    checkResults.style.display = 'block';
+
+                    if (response.allowUpdate) {
+                        // Store ID and password for the update form
+                        document.getElementById('update-student-id').value = bookingData.id;
+                        document.getElementById('update-password').value = password;
+                        // Set current selections
+                        document.getElementById('update-location').value = bookingData.location;
+                        document.getElementById('update-period').value = bookingData.period;
+                        updateForm.style.display = 'block';
+                    } else {
+                        updateForm.style.display = 'none'; 
+                    }
+                } else {
+                    showMessage(response.message, 'error');
+                }
+            })
+            .catch(error => {
+                hideLoading();
+                showMessage('An error occurred: ' + error.message, 'error');
+            });
+        });
+
+        /** 3. Handle Update Reservation */
+        updateForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            showLoading();
+
+            const formData = new FormData(updateForm);
+            const data = {
+                action: 'updateReservation',
+                id: document.getElementById('update-student-id').value,
+                password: document.getElementById('update-password').value,
+                newLocation: formData.get('updateLocation'),
+                newPeriod: formData.get('updatePeriod')
+            };
+
+            fetch(SCRIPT_URL, {
+                method: 'POST',
+                body: JSON.stringify(data),
+                headers: { 'Content-Type': 'text/plain' }
+            })
+            .then(res => res.json())
+            .then(response => {
+                hideLoading();
+                if (response.status === 'success') {
+                    showMessage(response.message, 'success');
+                    updateForm.style.display = 'none';
+                    checkResults.style.display = 'none';
+                    checkForm.reset();
+                    showPage('page-welcome'); // Go back to home
+                    fetchReservationData(); // Refresh data
+                } else {
+                    showMessage(response.message, 'error');
+                }
+            })
+            .catch(error => {
+                hideLoading();
+                showMessage('An error occurred: ' + error.message, 'error');
+            });
+        });
+
+        /** 4. Initial Load & Navigation Event Listeners */
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- Navigation ---
+            document.getElementById('btn-goto-check').addEventListener('click', () => showPage('page-check'));
+            document.getElementById('btn-periods-back').addEventListener('click', () => showPage('page-welcome'));
+            document.getElementById('btn-reserve-back').addEventListener('click', () => showPage('page-periods'));
+            document.getElementById('btn-check-back').addEventListener('click', () => showPage('page-welcome'));
+
+            // --- Language Toggles ---
+            document.getElementById('lang-toggle-welcome').addEventListener('click', toggleLanguage);
+            document.getElementById('lang-toggle-periods').addEventListener('click', toggleLanguage);
+            document.getElementById('lang-toggle-reserve').addEventListener('click', toggleLanguage);
+            document.getElementById('lang-toggle-check').addEventListener('click', toggleLanguage);
+            
+            // --- Dynamic Card Clicks (Event Delegation) ---
+            locationCardsContainer.addEventListener('click', (e) => {
+                const card = e.target.closest('.card-clickable');
+                if (card && card.dataset.location) {
+                    selectLocation(card.dataset.location);
+                }
+            });
+            
+            periodCardsContainer.addEventListener('click', (e) => {
+                const card = e.target.closest('.card-clickable');
+                if (card && card.dataset.period) {
+                    selectPeriod(card.dataset.period);
+                }
+            });
+
+            // --- Initial Load ---
+            applyTranslations();
+            fetchReservationData(); // Fetch data as soon as the page loads
+        });
+    </script>
+
 </body>
 </html>
+
