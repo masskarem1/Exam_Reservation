@@ -47,9 +47,7 @@
 
         /* --- RTL Styles --- */
         [dir="rtl"] { font-family: var(--font-family-ar); }
-        [dir="rtl"] .page-header-title,
-        [dir="rtl"] .card-title,
-        [dir="rtl"] .card-subtitle,
+        /* REMOVED title alignment from here, they are now globally centered */
         [dir="rtl"] .progress-label,
         [dir="rtl"] .form-group label { text-align: right; }
         [dir="rtl"] .page-header-actions { flex-direction: row-reverse; }
@@ -95,7 +93,7 @@
             margin-bottom: 24px;
         }
         .page-header-logo {
-            height: 150px;
+            height: 60px;
             margin-bottom: 16px;
         }
         .page-header-title {
@@ -103,11 +101,13 @@
             font-weight: 700;
             color: var(--text-dark);
             margin: 0;
+            /* Titles are centered from parent .page-header */
         }
         .page-header-subtitle {
             font-size: 0.9rem;
             margin: 4px 0 0;
             color: var(--text-muted);
+            /* Titles are centered from parent .page-header */
         }
         .page-header-actions {
             display: flex;
@@ -151,6 +151,7 @@
             font-size: 1.1rem;
             margin-top: 0;
             color: var(--text-dark);
+            text-align: center; /* ADDED */
         }
 
         /* --- Cards (Location & Period) --- */
@@ -169,11 +170,13 @@
             font-weight: 600;
             color: var(--text-dark);
             margin: 0;
+            text-align: center; /* ADDED */
         }
         .card-subtitle {
             font-size: 0.875rem;
             margin: 4px 0 0;
             color: var(--text-muted);
+            text-align: center; /* ADDED */
         }
         .card-body {
             padding: 20px;
@@ -292,6 +295,7 @@
         #check-results h3 {
             margin-top: 0;
             color: var(--text-dark);
+            text-align: center; /* ADDED */
         }
         #check-results p {
             margin: 8px 0;
@@ -386,7 +390,7 @@
                 </div>
             </header>
             <main class="page-content">
-                <h2 data-key="welcomeStep1">Step 1: Choose a Location</h2>
+                <h2 data-key="welcomeStep1">Step 1: Choose a Lab</h2>
                 <div id="location-cards-container">
                     <!-- Location cards will be dynamically inserted here -->
                 </div>
@@ -483,7 +487,7 @@
                     <p><strong data-key="resultName">Name:</strong> <span id="result-name"></span></p>
                     <p><strong data-key="resultId">ID:</strong> <span id="result-id"></span></p>
                     <p><strong data-key="resultDate">Date:</strong> <span id="result-date"></span></p>
-                    <p><strong data-key="resultLocation">Location:</strong> <span id="result-location"></span></p>
+                    <p><strong data-key="resultLocation">Lab:</strong> <span id="result-location"></span></p>
                     <p><strong data-key="resultPeriod">Period:</strong> <span id="result-period"></span></p>
                 </div>
 
@@ -495,11 +499,11 @@
                     <input type="hidden" id="update-password" name="updatePassword">
                     
                     <div class="form-group">
-                        <label for="update-location" data-key="labelUpdateLocation">New Location</label>
+                        <label for="update-location" data-key="labelUpdateLocation">New Lab</label>
                         <select id="update-location" name="updateLocation" required>
-                            <option value="" disabled selected data-key="optionChooseLocation">-- Choose a new location --</option>
-                            <option value="316 LB SS (Capacity 58)">316 LB SS (Capacity 58)</option>
-                            <option value="317 LB SS (Capacity 45)">317 LB SS (Capacity 45)</option>
+                            <option value="" disabled selected data-key="optionChooseLocation">-- Choose a new lab --</option>
+                            <option value="316 LB SS">316 LB SS</option>
+                            <option value="317 LB SS">317 LB SS</option>
                         </select>
                     </div>
 
@@ -547,12 +551,12 @@
                 'headerTitle': 'Exam Seat Reservation',
                 'headerDate': 'Tuesday, 4 November 2025',
                 'tabCheck': 'Check/Update Reservation',
-                'welcomeStep1': 'Step 1: Choose a Location',
+                'welcomeStep1': 'Step 1: Choose a Lab',
                 'periodsStep2': 'Step 2: Choose an available time slot',
                 'reserveStep3': 'Step 3: Confirm Reservation',
                 'reserveYourSeat': 'Your Seat',
                 'labelStudentId': 'Student ID',
-                'placeholderStudentId': 'Enter your ID',
+                'placeholderStudentId': 'Enter your 7-digit ID',
                 'labelCreatePassword': 'Create Password (min 4 chars)',
                 'placeholderCreatePassword': 'Create a password for updates',
                 'buttonConfirmReserve': 'Confirm My Reservation',
@@ -565,14 +569,14 @@
                 'resultName': 'Name:',
                 'resultId': 'ID:',
                 'resultDate': 'Date:',
-                'resultLocation': 'Location:',
+                'resultLocation': 'Lab:',
                 'resultPeriod': 'Period:',
                 'updateTitle': 'Change Your Reservation',
                 'updateWarning': 'Reservation changes are allowed until 3/11/2025.',
-                'labelUpdateLocation': 'New Location',
+                'labelUpdateLocation': 'New Lab',
                 'labelUpdatePeriod': 'New Period',
                 'buttonUpdate': 'Update My Reservation',
-                'optionChooseLocation': '-- Choose a new location --',
+                'optionChooseLocation': '-- Choose a new lab --',
                 'optionChoosePeriod': '-- Choose a new time slot --',
                 'capacity': 'Capacity',
                 'reserved': 'Reserved',
@@ -587,7 +591,7 @@
                 'msgSuccessUpdate': 'Your reservation has been successfully updated.',
                 'msgErrorIDNotFound': 'Student ID not found in the registration list.',
                 'msgErrorAlreadyReserved': 'This ID already has a reservation. Check your reservation to make changes.',
-                'msgErrorCapacity': 'Sorry, that location is full for this period.',
+                'msgErrorCapacity': 'is full for this period.',
                 'msgErrorInvalidPeriod': 'Invalid period selected.',
                 'msgErrorNoReservation': 'No reservation found for this ID.',
                 'msgErrorSameReservation': 'This is the same as your current reservation.',
@@ -609,7 +613,7 @@
                 'reserveStep3': 'الخطوة 3: تأكيد الحجز',
                 'reserveYourSeat': 'مقعدك',
                 'labelStudentId': 'الرقم الجامعي',
-                'placeholderStudentId': 'أدخل رقمك الجامعي',
+                'placeholderStudentId': 'أدخل رقمك المكون من 7 أرقام',
                 'labelCreatePassword': 'إنشاء كلمة مرور (4 أحرف على الأقل)',
                 'placeholderCreatePassword': 'أنشئ كلمة مرور للتحديثات',
                 'buttonConfirmReserve': 'تأكيد حجزي',
@@ -644,7 +648,7 @@
                 'msgSuccessUpdate': 'تم تحديث حجزك بنجاح.',
                 'msgErrorIDNotFound': 'الرقم الجامعي غير موجود في قائمة التسجيل.',
                 'msgErrorAlreadyReserved': 'هذا الرقم لديه حجز بالفعل. يمكنك الاستعلام لتغيير الحجز.',
-                'msgErrorCapacity': 'عذراً، هذا المعمل ممتلئ في الفترة المحددة.',
+                'msgErrorCapacity': 'ممتلئ في الفترة المحددة.',
                 'msgErrorInvalidPeriod': 'فترة زمنية غير صالحة.',
                 'msgErrorNoReservation': 'لم يتم العثور على حجز لهذا الرقم.',
                 'msgErrorSameReservation': 'هذا هو نفس حجزك الحالي.',
@@ -743,7 +747,7 @@
                 if (message.includes(partial)) {
                     key = dynamicMessageKeys[partial];
                     // Extract dynamic part (location)
-                    const location = message.split(' is full')[0].trim();
+                    const location = message.split(' is full')[0].substring('Sorry, '.length).trim();
                     return `${location} ${lang[key]}`; // Reconstruct message
                 }
             }
