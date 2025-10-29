@@ -507,7 +507,7 @@
                             </div>
                             <div class="form-group">
                                 <label for="student-email" data-key="labelStudentEmail">Email Address</label>
-                                <input type="email" id="student-email" name="studentEmail" data-key-placeholder="placeholderStudentEmail" placeholder="Enter your email address" required>
+                                <input type="email" id="student-email" name="studentEmail" data-key-placeholder="placeholderStudentEmail" placeholder="Enter your email address" pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}" required>
                             </div>
                             <div class="form-group">
                                 <label for="student-password" data-key="labelCreatePassword">Create Password (min 4 chars)</label>
@@ -673,7 +673,8 @@
                 'msgErrorShortPassword': 'Password must be at least 4 characters long.',
                 'msgErrorPasswordSet': 'You have already set a password. Go to Check/Update to log in.',
                 'msgErrorPasswordNotSet': 'You have not set a password yet. Please make a new reservation to set one.',
-                'msgErrorIncorrectPassword': 'Incorrect password.'
+                'msgErrorIncorrectPassword': 'Incorrect password.',
+                'msgErrorInvalidEmail': 'Invalid email format. Please enter a valid email address.'
             },
             'ar': {
                 'pageTitle': 'حجز مقاعد الاختبار',
@@ -689,6 +690,8 @@
                 'reserveYourSeat': 'مقعدك',
                 'labelStudentId': 'الرقم الجامعي',
                 'placeholderStudentId': 'أدخل رقمك المكون من 5 أو 9 أرقام',
+                'labelStudentEmail': 'البريد الإلكتروني',
+                'placeholderStudentEmail': 'أدخل بريدك الإلكتروني',
                 'labelCreatePassword': 'إنشاء كلمة مرور (4 أحرف على الأقل)',
                 'placeholderCreatePassword': 'أنشئ كلمة مرور للتحديثات',
                 'buttonConfirmReserve': 'تأكيد حجزي',
@@ -733,7 +736,8 @@
                 'msgErrorShortPassword': 'كلمة المرور يجب أن تكون 4 أحرف على الأقل.',
                 'msgErrorPasswordSet': 'لقد قمت بإنشاء كلمة مرور من قبل. اذهب إلى الاستعلام لتسجيل الدخول.',
                 'msgErrorPasswordNotSet': 'لم تقم بإنشاء كلمة مرور. يرجى عمل حجز جديد لإنشاء واحدة.',
-                'msgErrorIncorrectPassword': 'كلمة المرور غير صحيحة.'
+                'msgErrorIncorrectPassword': 'كلمة المرور غير صحيحة.',
+                'msgErrorInvalidEmail': 'صيغة البريد الإلكتروني غير صحيحة. يرجى إدخال بريد إلكتروني صالح.'
             }
         };
         
@@ -753,7 +757,8 @@
             'You have already set a password. Go to Check/Update to log in.': 'msgErrorPasswordSet',
             'You have not set a password yet. Please make a new reservation to set one.': 'msgErrorPasswordNotSet',
             'Incorrect password.': 'msgErrorIncorrectPassword',
-            'Invalid lab selected.': 'msgErrorGeneric', 
+            'Invalid lab selected.': 'msgErrorGeneric',
+            'Invalid email format.': 'msgErrorInvalidEmail'
         };
         // Keys for dynamic messages
         const dynamicMessageKeys = {
@@ -1019,12 +1024,16 @@
             showLoading();
             document.getElementById('reserve-message').style.display = 'none'; // Hide previous messages
 
-            const studentId = document.getElementById('student-id').value;
+            const studentId = document.getElementById('student-id').value.trim();
+            const studentEmail = document.getElementById('student-email').value.trim();
             const password = document.getElementById('student-password').value;
+            
+            console.log('Submitting:', { studentId, email: studentEmail, location: selectedLocation, period: selectedPeriod });
             
             const data = {
                 action: 'submitReservation',
                 studentId: studentId,
+                email: studentEmail,  // Make sure this matches what Code.gs expects
                 location: selectedLocation,
                 period: selectedPeriod,
                 password: password
@@ -1038,6 +1047,7 @@
             .then(res => res.json())
             .then(response => {
                 hideLoading();
+                console.log('Response:', response);
                 if (response.status === 'success') {
                     showInlineMessage('reserve-message', response.message, 'success');
                     reserveForm.reset();
@@ -1051,6 +1061,7 @@
             })
             .catch(error => {
                 hideLoading();
+                console.error('Fetch error:', error);
                 showInlineMessage('reserve-message', 'An error occurred: ' + error.message, 'error');
             });
         });
