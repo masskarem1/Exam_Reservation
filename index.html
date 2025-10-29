@@ -5,68 +5,45 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title data-key="pageTitle">Exam Seat Reservation</title>
     <style>
-        /* --- Base & Typography --- */
+        /* --- Base & Typography (NEW WHITE THEME) --- */
         :root {
             --primary-color: #6366f1; /* Indigo */
-            --primary-light: #c7d2fe;
+            --primary-light: #e0e7ff; /* Indigo-100 */
             --secondary-color: #374151; /* Gray-700 */
-            --text-light: #f9fafb; /* Gray-50 */
-            --text-dark: #1f2937; /* Gray-800 */
+            --text-dark: #1f2937; /* Gray-800 - Default text */
+            --text-light: #f9fafb; /* Gray-50 - Text on buttons */
+            --text-muted: #6b7280; /* Gray-500 */
             --success-color: #10b981; /* Emerald-500 */
             --error-color: #ef4444; /* Red-500 */
-            --border-color: rgba(255, 255, 255, 0.2);
-            --card-bg: rgba(255, 255, 255, 0.15);
+            --border-color: #e5e7eb; /* Gray-200 */
+            --card-bg: #ffffff; /* White */
+            --body-bg: #f8f9fa; /* Light Gray */
             --font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
             --font-family-ar: "Tahoma", "Arial", sans-serif;
         }
 
-        /* --- Glass Theme Styles --- */
+        /* --- Body Styles --- */
         body {
             font-family: var(--font-family);
-            background: linear-gradient(120deg, #5b21b6 0%, #1d4ed8 100%); /* Violet to Blue */
+            background-color: var(--body-bg); /* Light gray background */
             margin: 0;
-            color: var(--text-light);
+            color: var(--text-dark); /* Default text is dark */
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
             overflow-x: hidden;
             height: 100%;
         }
         
-        /* Background decorative shapes */
-        body::before, body::after {
-            content: '';
-            position: fixed;
-            z-index: -1;
-            border-radius: 50%;
-            filter: blur(100px);
-        }
-        
-        body::before {
-            background: rgba(167, 139, 250, 0.3); /* Violet-300 */
-            width: 400px;
-            height: 400px;
-            top: -100px;
-            left: -100px;
-        }
-
-        body::after {
-            background: rgba(96, 165, 250, 0.3); /* Blue-300 */
-            width: 300px;
-            height: 300px;
-            bottom: -50px;
-            right: -50px;
-        }
-        
-        /* Glass Card Effect */
-        .glass-card {
+        /* --- Card Styles (Replaces Glass Theme) --- */
+        .card {
             background: var(--card-bg);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
             border: 1px solid var(--border-color);
-            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.2);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            border-radius: 12px;
+            margin-bottom: 16px;
+            overflow: hidden;
+            transition: box-shadow 0.3s ease, transform 0.3s ease;
         }
-        /* --- End Glass Theme --- */
-
 
         /* --- RTL Styles --- */
         [dir="rtl"] { font-family: var(--font-family-ar); }
@@ -88,6 +65,7 @@
             min-height: 100vh;
             display: flex;
             flex-direction: column;
+            background-color: var(--body-bg);
         }
 
         /* --- Page Sections (Views) --- */
@@ -109,24 +87,27 @@
         .page-header {
             padding: 24px 20px;
             position: relative;
-        }
-        .page-header.glass-card {
+            text-align: center;
+            background: var(--card-bg);
+            border-bottom: 1px solid var(--border-color);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
             border-radius: 0 0 24px 24px;
             margin-bottom: 24px;
-            border-top: 0;
-            border-left: 0;
-            border-right: 0;
+        }
+        .page-header-logo {
+            height: 150px;
+            margin-bottom: 16px;
         }
         .page-header-title {
             font-size: 1.5rem;
             font-weight: 700;
-            color: var(--text-light);
+            color: var(--text-dark);
             margin: 0;
         }
         .page-header-subtitle {
             font-size: 0.9rem;
             margin: 4px 0 0;
-            opacity: 0.8;
+            color: var(--text-muted);
         }
         .page-header-actions {
             display: flex;
@@ -139,16 +120,15 @@
             font-size: 0.875rem;
             padding: 8px 14px;
             border: 1px solid var(--border-color);
-            background-color: rgba(255, 255, 255, 0.1);
-            color: var(--text-light);
+            background-color: var(--card-bg);
+            color: var(--secondary-color);
             border-radius: 8px;
             cursor: pointer;
             transition: all 0.2s ease;
-            backdrop-filter: blur(5px);
         }
         .action-button:hover, .back-button:hover, .lang-toggle:hover {
-            background-color: rgba(255, 255, 255, 0.2);
-            border-color: rgba(255, 255, 255, 0.3);
+            background-color: #f9fafb; /* Gray-50 */
+            border-color: #d1d5db; /* Gray-300 */
         }
         .lang-toggle {
             margin-left: auto;
@@ -170,22 +150,16 @@
             font-weight: 600;
             font-size: 1.1rem;
             margin-top: 0;
-            color: var(--text-light);
+            color: var(--text-dark);
         }
 
         /* --- Cards (Location & Period) --- */
-        .card {
-            border-radius: 12px;
-            margin-bottom: 16px;
-            overflow: hidden;
-            transition: box-shadow 0.3s ease, transform 0.3s ease;
-        }
         .card-clickable {
             cursor: pointer;
         }
         .card-clickable:hover {
             transform: translateY(-3px);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.07), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
         }
         .card-header {
             padding: 20px;
@@ -193,13 +167,13 @@
         .card-title {
             font-size: 1.125rem;
             font-weight: 600;
-            color: var(--text-light);
+            color: var(--text-dark);
             margin: 0;
         }
         .card-subtitle {
             font-size: 0.875rem;
             margin: 4px 0 0;
-            opacity: 0.8;
+            color: var(--text-muted);
         }
         .card-body {
             padding: 20px;
@@ -215,11 +189,11 @@
             font-size: 0.875rem;
             font-weight: 500;
             margin-bottom: 8px;
-            color: var(--text-light);
+            color: var(--text-muted);
         }
         .progress-track {
             height: 10px;
-            background-color: rgba(0, 0, 0, 0.1);
+            background-color: var(--border-color);
             border-radius: 5px;
             overflow: hidden;
         }
@@ -238,7 +212,7 @@
         }
         .status-full {
             font-weight: 700;
-            color: #fca5a5; /* Red-300 */
+            color: var(--error-color);
         }
 
         /* --- Form --- */
@@ -249,8 +223,7 @@
             display: block;
             font-weight: 600;
             margin-bottom: 8px;
-            color: var(--text-light);
-            opacity: 0.9;
+            color: var(--text-dark);
         }
         .form-group input, .form-group select {
             width: 100%;
@@ -260,30 +233,30 @@
             border-radius: 8px;
             box-sizing: border-box; /* Important for padding */
             font-family: inherit;
-            background-color: rgba(255, 255, 255, 0.1);
-            color: var(--text-light);
+            background-color: #ffffff;
+            color: var(--text-dark);
         }
         .form-group input::placeholder {
-            color: rgba(255, 255, 255, 0.5);
+            color: #9ca3af; /* Gray-400 */
         }
         .form-group input:focus, .form-group select:focus {
             outline: none;
-            border-color: rgba(255, 255, 255, 0.5);
-            background-color: rgba(255, 255, 255, 0.2);
-            box-shadow: 0 0 0 2px var(--primary-color);
+            border-color: var(--primary-color);
+            background-color: #ffffff;
+            box-shadow: 0 0 0 2px var(--primary-light);
         }
         /* Style for Select Dropdown */
         .form-group select {
             appearance: none;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%23fff' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3E%3C/svg%3E");
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3E%3C/svg%3E");
             background-repeat: no-repeat;
             background-position: right 12px center;
             background-size: 1em;
             padding-right: 40px;
         }
         .form-group select option {
-            background-color: #2b304f; /* Dark background for options */
-            color: var(--text-light);
+            background-color: #ffffff;
+            color: var(--text-dark);
         }
         
         .form-button {
@@ -291,16 +264,16 @@
             padding: 14px;
             font-size: 1rem;
             font-weight: 700;
-            color: var(--primary-color);
-            background-color: var(--text-light);
+            color: var(--text-light);
+            background-color: var(--primary-color);
             border: none;
             border-radius: 8px;
             cursor: pointer;
             transition: all 0.3s ease;
         }
         .form-button:hover {
-            background-color: var(--primary-light);
-            box-shadow: 0 4px 20px rgba(199, 210, 254, 0.4);
+            background-color: #4f46e5; /* Indigo-700 */
+            box-shadow: 0 4px 20px rgba(99, 102, 241, 0.4);
         }
         .form-button:disabled {
             background-color: #a5b4fc;
@@ -311,23 +284,23 @@
         #check-results {
             display: none;
             margin-top: 24px;
-            padding: 16px;
+            padding: 20px;
             border-radius: 12px;
-            background-color: var(--card-bg);
+            background-color: #f9fafb; /* Gray-50 */
             border: 1px solid var(--border-color);
         }
         #check-results h3 {
             margin-top: 0;
-            color: var(--text-light);
+            color: var(--text-dark);
         }
         #check-results p {
             margin: 8px 0;
             font-size: 1rem;
             line-height: 1.5;
+            color: var(--text-dark);
         }
         #check-results p strong {
-            color: var(--text-light);
-            opacity: 0.8;
+            color: var(--text-muted);
             margin-right: 8px;
         }
         #update-form {
@@ -338,8 +311,13 @@
         }
         #update-form h3 {
             text-align: center;
-            color: var(--text-light);
+            color: var(--text-dark);
             margin-top: 0;
+        }
+        #update-form .update-warning {
+            text-align:center; 
+            color: var(--error-color); 
+            font-weight: 600;
         }
 
         /* --- Loading & Message Modals --- */
@@ -349,7 +327,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.5);
+            background: rgba(248, 249, 250, 0.7);
             display: none;
             justify-content: center;
             align-items: center;
@@ -359,8 +337,8 @@
         .spinner {
             width: 50px;
             height: 50px;
-            border: 5px solid rgba(255, 255, 255, 0.3);
-            border-top: 5px solid var(--text-light);
+            border: 5px solid rgba(0, 0, 0, 0.1);
+            border-top: 5px solid var(--primary-color);
             border-radius: 50%;
             animation: spin 1s linear infinite;
         }
@@ -384,11 +362,10 @@
             display: none;
             text-align: center;
             max-width: 90%;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 0, 0, 0.05);
         }
-        #message-modal.success { background-color: rgba(16, 185, 129, 0.8); }
-        #message-modal.error { background-color: rgba(239, 68, 68, 0.8); }
+        #message-modal.success { background-color: var(--success-color); }
+        #message-modal.error { background-color: var(--error-color); }
     </style>
 </head>
 <body dir="ltr">
@@ -399,7 +376,8 @@
         <!-- PAGE 1: CHOOSE LOCATION (WELCOME) -->
         <!-- ============================================= -->
         <section id="page-welcome" class="page active">
-            <header class="page-header glass-card">
+            <header class="page-header">
+                <img src="https://smartlearning.must.edu.eg/pluginfile.php/1/core_admin/logo/0x200/1715171530/logo.png" alt="University Logo" class="page-header-logo">
                 <h1 class="page-header-title" data-key="headerTitle">Exam Seat Reservation</h1>
                 <p class="page-header-subtitle" data-key="headerDate">Tuesday, 4 November 2025</p>
                 <div class="page-header-actions">
@@ -419,7 +397,7 @@
         <!-- PAGE 2: CHOOSE PERIOD -->
         <!-- ============================================= -->
         <section id="page-periods" class="page">
-            <header class="page-header glass-card">
+            <header class="page-header">
                 <div class="page-header-actions" style="margin-top: 0;">
                     <button class="back-button" onclick="showPage('page-welcome')">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" /></svg>
@@ -440,7 +418,7 @@
         <!-- PAGE 3: ENTER ID & CONFIRM -->
         <!-- ============================================= -->
         <section id="page-reserve" class="page">
-            <header class="page-header glass-card">
+            <header class="page-header">
                 <div class="page-header-actions" style="margin-top: 0;">
                     <button class="back-button" onclick="showPage('page-periods')">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" /></svg>
@@ -450,7 +428,7 @@
                 <h1 class="page-header-title" data-key="reserveStep3" style="margin-top: 16px;">Step 3: Confirm Reservation</h1>
             </header>
             <main class="page-content">
-                <div class="card glass-card">
+                <div class="card">
                     <div class="card-header">
                         <h2 class="card-title" data-key="reserveYourSeat">Your Seat</h2>
                         <p class="card-subtitle" id="reserve-details"></p>
@@ -461,7 +439,6 @@
                                 <label for="student-id" data-key="labelStudentId">Student ID</label>
                                 <input type="text" id="student-id" name="studentId" data-key-placeholder="placeholderStudentId" placeholder="Enter your 7-digit ID" required>
                             </div>
-                            <!-- NEW: Password Field -->
                             <div class="form-group">
                                 <label for="student-password" data-key="labelCreatePassword">Create Password (min 4 chars)</label>
                                 <input type="password" id="student-password" name="studentPassword" data-key-placeholder="placeholderCreatePassword" placeholder="Create a password for updates" required>
@@ -477,7 +454,7 @@
         <!-- PAGE 4: CHECK/UPDATE RESERVATION -->
         <!-- ============================================= -->
         <section id="page-check" class="page">
-            <header class="page-header glass-card">
+            <header class="page-header">
                 <div class="page-header-actions" style="margin-top: 0;">
                     <button class="back-button" onclick="showPage('page-welcome')">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" /></svg>
@@ -488,12 +465,11 @@
             </header>
             <main class="page-content">
                 <!-- Check Form -->
-                <form id="check-form" class="card glass-card card-body">
+                <form id="check-form" class="card card-body">
                     <div class="form-group">
                         <label for="check-student-id" data-key="labelCheckStudentId">Student ID</label>
                         <input type="text" id="check-student-id" name="checkStudentId" data-key-placeholder="placeholderCheckStudentId" placeholder="Enter your ID to check" required>
                     </div>
-                    <!-- NEW: Password Field -->
                     <div class="form-group">
                         <label for="check-password" data-key="labelPassword">Password</label>
                         <input type="password" id="check-password" name="checkPassword" data-key-placeholder="placeholderPassword" placeholder="Enter your password" required>
@@ -512,9 +488,9 @@
                 </div>
 
                 <!-- Update Form (hidden) -->
-                <form id="update-form" class="card glass-card card-body" style="margin-top: 24px;">
+                <form id="update-form" class="card card-body" style="margin-top: 24px;">
                     <h3 data-key="updateTitle">Change Your Reservation</h3>
-                    <p style="text-align:center; color: #fca5a5; font-weight: 600;" data-key="updateWarning">Reservation changes are allowed until 3/11/2025.</p>
+                    <p class="update-warning" data-key="updateWarning">Reservation changes are allowed until 3/11/2025.</p>
                     <input type="hidden" id="update-student-id" name="updateStudentId">
                     <input type="hidden" id="update-password" name="updatePassword">
                     
@@ -766,7 +742,9 @@
             for (const partial in dynamicMessageKeys) {
                 if (message.includes(partial)) {
                     key = dynamicMessageKeys[partial];
-                    return lang[key];
+                    // Extract dynamic part (location)
+                    const location = message.split(' is full')[0].trim();
+                    return `${location} ${lang[key]}`; // Reconstruct message
                 }
             }
             
@@ -816,7 +794,7 @@
                 const remaining = total - totalReserved;
                 
                 const card = document.createElement('div');
-                card.className = 'card glass-card card-clickable';
+                card.className = 'card card-clickable';
                 card.setAttribute('onclick', `selectLocation("${locationName}")`);
                 
                 card.innerHTML = `
@@ -851,7 +829,7 @@
                 if (isFull) progressClass += ' full';
                 
                 const card = document.createElement('div');
-                card.className = 'card glass-card' + (isFull ? '' : ' card-clickable');
+                card.className = 'card' + (isFull ? '' : ' card-clickable');
                 if (!isFull) {
                     card.setAttribute('onclick', `selectPeriod("${periodName}")`);
                 }
@@ -912,10 +890,11 @@
                     body: JSON.stringify(payload),
                     headers: { 'Content-Type': 'text/plain' }, // Use text/plain to avoid preflight
                     redirect: 'follow',
+                    mode: 'cors' // Explicitly set mode
                 });
 
                 if (!response.ok) {
-                    throw new Error('Network response was not ok');
+                    throw new Error(`Network response was not ok (${response.status} ${response.statusText})`);
                 }
 
                 const result = await response.json();
@@ -931,7 +910,7 @@
             } catch (error) {
                 hideLoading();
                 showMessage(lang['errorLoadingData'], 'error');
-                console.error('Fetch Error:', error);
+                console.error('Fetch Error:', error.message, ' - This often means the Google Apps Script has not been deployed or re-deployed correctly.');
             }
         }
 
