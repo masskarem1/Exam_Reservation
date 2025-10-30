@@ -1179,6 +1179,7 @@
             })
             .catch(error => {
                 hideLoading();
+                // FIXED: Removed stray 'M'
                 showFormMessage(updateFormMessage, 'An error occurred: ' + error.message, 'error');
             });
         });
