@@ -322,7 +322,7 @@
             border-radius: 8px;
             font-weight: 600;
             text-align: center;
-            animation: slideDown 0.3s ease-out; /* Added animation */
+            animation: slideDown 0.3s ease-out;
         }
         .form-message.success {
             background-color: #d1fae5; /* Emerald-100 */
@@ -422,12 +422,6 @@
         }
         #message-modal.success { background-color: var(--success-color); }
         #message-modal.error { background-color: var(--error-color); }
-
-        /* --- Deprecated .inline-message style (now using .form-message) --- */
-        .inline-message { 
-            /* This style is kept for any old elements, but .form-message is preferred */
-            display: none;
-        }
         
         @keyframes slideDown {
             from { opacity: 0; transform: translateY(-10px); }
@@ -512,16 +506,14 @@
                             </div>
                             <div class="form-group">
                                 <label for="student-email" data-key="labelStudentEmail">Email Address</label>
-                                <input type="email" id="student-email" name="studentEmail" data-key-placeholder="placeholderStudentEmail" placeholder="Enter your email address" pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}" required>
+                                <input type="email" id="student-email" name="studentEmail" data-key-placeholder="placeholderStudentEmail" placeholder="Enter your email address" required>
                             </div>
                             <div class="form-group">
                                 <label for="student-password" data-key="labelCreatePassword">Create Password (min 4 chars)</label>
                                 <input type="password" id="student-password" name="studentPassword" data-key-placeholder="placeholderCreatePassword" placeholder="Create a password for updates" required>
                             </div>
-                            <!-- FIXED: Added id="btn-confirm-reserve" -->
                             <button type="submit" class="form-button" id="btn-confirm-reserve" data-key="buttonConfirmReserve">Confirm My Reservation</button>
-                            <!-- FIXED: Changed class to "form-message" -->
-                            <div id="reserve-message" class="form-message"></div>
+                            <div id="reserve-message" class="form-message"></div> <!-- This is the message box -->
                         </form>
                     </div>
                 </div>
@@ -553,20 +545,20 @@
                         <input type="password" id="check-password" name="checkPassword" data-key-placeholder="placeholderPassword" placeholder="Enter your password" required>
                     </div>
                     <button type="submit" class="form-button" data-key="buttonCheck">Check My Reservation</button>
-                    <!-- FIXED: Added id="check-form-message" -->
+                    <!-- In-form message area for check page -->
                     <div id="check-form-message" class="form-message"></div>
                 </form>
 
                 <!-- Check Results (hidden) -->
                 <div id="check-results">
                     <h3 data-key="resultsTitle">Your Current Reservation</h3>
+                    <!-- REORDERED PER USER REQUEST -->
                     <p><strong data-key="resultLocation">Lab:</strong> <span id="result-location"></span></p>
                     <p><strong data-key="resultPeriod">Period:</strong> <span id="result-period"></span></p>
-                    <!-- FIXED: Changed span id to "result-exam-date" -->
-                    <p><strong data-key="resultExamDate">Exam Date:</strong> <span id="result-exam-date"></span></p>
+                    <p><strong data-key="resultExamDate">Exam Date:</strong> <span data-key="examDateFull">Tuesday, 4 November 2025</span></p>
                     <p><strong data-key="resultName">Name:</strong> <span id="result-name"></span></p>
                     <p><strong data-key="resultId">ID:</strong> <span id="result-id"></span></p>
-                    <p><strong data-key="resultDate">Reservation Date:</strong> <span id="result-date"></span></p>
+                    <p><strong data-key="resultDate">Reservation Date:</strong> <span id="result-date"></span></p> 
                 </div>
 
                 <!-- Update Form (hidden) -->
@@ -596,8 +588,9 @@
                             <option value="12:40 - 1:15">12:40 - 1:15</option>
                         </select>
                     </div>
-                    <button type="submit" class="form-button" data-key="buttonUpdate">Update My Reservation</button>
-                    <!-- FIXED: Changed id to "update-form-message" and class to "form-message" -->
+                    <!-- FIXED: Added id="btn-confirm-update" -->
+                    <button type="submit" class="form-button" id="btn-confirm-update" data-key="buttonUpdate">Update My Reservation</button>
+                    <!-- In-form message area for update form -->
                     <div id="update-form-message" class="form-message"></div>
                 </form>
             </main>
@@ -616,7 +609,6 @@
     <script>
         // --- Configuration ---
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwf0UwMPYQ-DtVZEZ9EH3sBZW-y1KFQU7UT5TdwUgC1MrptesUmE8F4gDMZpKlBygXFBw/exec";
-        const EXAM_DATE = "Tuesday, 4 November 2025"; // Define exam date constant
         const PERIODS = [
             "10:00 - 10:35",
             "10:40 - 11:15",
@@ -630,7 +622,6 @@
             'en': {
                 'pageTitle': 'Exam Seat Reservation',
                 'headerTitle': 'Exam Seat Reservation',
-                // UPDATED - Added strong tag
                 'headerDate': '<strong>Exam Date:</strong> Tuesday, 4 November 2025',
                 'labelCourseCode': 'Course Code:',
                 'labelInstructor': 'Instructor:',
@@ -641,7 +632,6 @@
                 'reserveYourSeat': 'Your Seat',
                 'labelStudentId': 'Student ID',
                 'placeholderStudentId': 'Enter your 5 or 9 digit ID',
-                // FIXED: Added missing email translations
                 'labelStudentEmail': 'Email Address',
                 'placeholderStudentEmail': 'Enter your email address',
                 'labelCreatePassword': 'Create Password (min 4 chars)',
@@ -655,8 +645,9 @@
                 'resultsTitle': 'Your Current Reservation',
                 'resultName': 'Name:',
                 'resultId': 'ID:',
-                'resultDate': 'Reservation Date:',
-                'resultExamDate': 'Exam Date:',
+                'resultDate': 'Reservation Date:', 
+                'resultExamDate': 'Exam Date:', // NEW
+                'examDateFull': 'Tuesday, 4 November 2025', // NEW
                 'resultLocation': 'Lab:',
                 'resultPeriod': 'Period:',
                 'updateTitle': 'Change Your Reservation',
@@ -678,6 +669,7 @@
                 'msgSuccess': 'Reservation successful! Your seat is booked.',
                 'msgSuccessUpdate': 'Your reservation has been successfully updated.',
                 'msgErrorIDNotFound': 'Student ID not found or invalid format (must be 5 or 9 digits).', 
+                'msgErrorInvalidEmail': 'Invalid email format.',
                 'msgErrorAlreadyReserved': 'This ID already has a reservation. Check your reservation to make changes.',
                 'msgErrorCapacity': 'is full for this period.',
                 'msgErrorInvalidPeriod': 'Invalid period selected.',
@@ -689,13 +681,11 @@
                 'msgErrorShortPassword': 'Password must be at least 4 characters long.',
                 'msgErrorPasswordSet': 'You have already set a password. Go to Check/Update to log in.',
                 'msgErrorPasswordNotSet': 'You have not set a password yet. Please make a new reservation to set one.',
-                'msgErrorIncorrectPassword': 'Incorrect password.',
-                'msgErrorInvalidEmail': 'Invalid email format. Please enter a valid email address.'
+                'msgErrorIncorrectPassword': 'Incorrect password.'
             },
             'ar': {
                 'pageTitle': 'حجز مقاعد الاختبار',
                 'headerTitle': 'حجز مقاعد الاختبار',
-                 // UPDATED - Added strong tag
                 'headerDate': '<strong>تاريخ الاختبار:</strong> الثلاثاء، 4 نوفمبر 2025',
                 'labelCourseCode': 'رمز المادة:',
                 'labelInstructor': 'المدرس:',
@@ -706,7 +696,6 @@
                 'reserveYourSeat': 'مقعدك',
                 'labelStudentId': 'الرقم الجامعي',
                 'placeholderStudentId': 'أدخل رقمك المكون من 5 أو 9 أرقام',
-                // FIXED: Added missing email translations
                 'labelStudentEmail': 'البريد الإلكتروني',
                 'placeholderStudentEmail': 'أدخل بريدك الإلكتروني',
                 'labelCreatePassword': 'إنشاء كلمة مرور (4 أحرف على الأقل)',
@@ -720,8 +709,9 @@
                 'resultsTitle': 'حجزك الحالي',
                 'resultName': 'الاسم:',
                 'resultId': 'الرقم الجامعي:',
-                'resultDate': 'تاريخ الحجز:',
-                'resultExamDate': 'تاريخ الاختبار:',
+                'resultDate': 'تاريخ الحجز:', 
+                'resultExamDate': 'تاريخ الاختبار:', // NEW
+                'examDateFull': 'الثلاثاء، 4 نوفمبر 2025', // NEW
                 'resultLocation': 'المعمل:',
                 'resultPeriod': 'الفترة:',
                 'updateTitle': 'تغيير حجزك',
@@ -743,6 +733,7 @@
                 'msgSuccess': 'تم الحجز بنجاح!',
                 'msgSuccessUpdate': 'تم تحديث حجزك بنجاح.',
                 'msgErrorIDNotFound': 'الرقم الجامعي غير موجود أو غير صالح (يجب أن يكون 5 أو 9 أرقام).',
+                'msgErrorInvalidEmail': 'صيغة البريد الإلكتروني غير صحيحة.',
                 'msgErrorAlreadyReserved': 'هذا الرقم لديه حجز بالفعل. يمكنك الاستعلام لتغيير الحجز.',
                 'msgErrorCapacity': 'ممتلئ في الفترة المحددة.',
                 'msgErrorInvalidPeriod': 'فترة زمنية غير صالحة.',
@@ -754,8 +745,7 @@
                 'msgErrorShortPassword': 'كلمة المرور يجب أن تكون 4 أحرف على الأقل.',
                 'msgErrorPasswordSet': 'لقد قمت بإنشاء كلمة مرور من قبل. اذهب إلى الاستعلام لتسجيل الدخول.',
                 'msgErrorPasswordNotSet': 'لم تقم بإنشاء كلمة مرور. يرجى عمل حجز جديد لإنشاء واحدة.',
-                'msgErrorIncorrectPassword': 'كلمة المرور غير صحيحة.',
-                'msgErrorInvalidEmail': 'صيغة البريد الإلكتروني غير صحيحة. يرجى إدخال بريد إلكتروني صالح.'
+                'msgErrorIncorrectPassword': 'كلمة المرور غير صحيحة.'
             }
         };
         
@@ -765,9 +755,11 @@
             'Your reservation has been successfully updated.': 'msgSuccessUpdate',
             'Student ID not found in the registration list.': 'msgErrorIDNotFound',
             'Invalid Student ID format. Must be 5 or 9 digits.': 'msgErrorIDNotFound', 
+            'Invalid email format.': 'msgErrorInvalidEmail',
             'This ID already has a reservation. Check your reservation to make changes.': 'msgErrorAlreadyReserved',
             'Invalid period selected.': 'msgErrorInvalidPeriod',
             'No reservation found for this ID.': 'msgErrorNoReservation',
+            'No reservation found for this ID. You can make a new one.': 'msgErrorNoReservation',
             'The deadline for changing reservations (3/11/2025) has passed.': 'msgErrorDeadline',
             'Could not find your original reservation to update.': 'msgErrorUpdateFailed',
             'This is the same as your current reservation.': 'msgErrorSameReservation',
@@ -775,8 +767,8 @@
             'You have already set a password. Go to Check/Update to log in.': 'msgErrorPasswordSet',
             'You have not set a password yet. Please make a new reservation to set one.': 'msgErrorPasswordNotSet',
             'Incorrect password.': 'msgErrorIncorrectPassword',
-            'Invalid lab selected.': 'msgErrorGeneric',
-            'Invalid email format.': 'msgErrorInvalidEmail'
+            'Invalid lab selected.': 'msgErrorGeneric', 
+            'Reservation failed. Could not save password/email.': 'msgErrorGeneric'
         };
         // Keys for dynamic messages
         const dynamicMessageKeys = {
@@ -788,21 +780,22 @@
         let reservationData = null;
         let selectedLocation = null;
         let selectedPeriod = null;
+        let reserveBackPage = 'page-periods'; // <-- STATE FOR BACK BUTTON
 
         // --- DOM Elements ---
         const loadingOverlay = document.getElementById('loading-overlay');
         const messageModal = document.getElementById('message-modal');
         const reserveForm = document.getElementById('reserve-form');
+        const reserveMessage = document.getElementById('reserve-message'); 
         const checkForm = document.getElementById('check-form');
+        const checkFormMessage = document.getElementById('check-form-message');
         const updateForm = document.getElementById('update-form');
+        const updateFormMessage = document.getElementById('update-form-message');
         const checkResults = document.getElementById('check-results');
         const locationCardsContainer = document.getElementById('location-cards-container');
         const periodCardsContainer = document.getElementById('period-cards-container');
-        // FIXED: Get all message boxes
-        const reserveMessage = document.getElementById('reserve-message');
-        const checkFormMessage = document.getElementById('check-form-message');
-        const updateFormMessage = document.getElementById('update-form-message');
         const btnConfirmReserve = document.getElementById('btn-confirm-reserve');
+        const btnConfirmUpdate = document.getElementById('btn-confirm-update'); // FIXED: Get update button
         
         // --- Language Functions ---
         function applyTranslations() {
@@ -813,8 +806,7 @@
             document.querySelectorAll('[data-key]').forEach(el => {
                 const key = el.getAttribute('data-key');
                 if (lang[key]) {
-                    // Use innerHTML for keys that might contain HTML (like headerDate)
-                    if (key === 'headerDate') {
+                    if (key === 'headerDate' || key === 'examDateFull') { 
                          el.innerHTML = lang[key];
                     } else {
                          el.textContent = lang[key];
@@ -827,9 +819,8 @@
                 if (lang[key]) el.placeholder = lang[key];
             });
             
-            // Update lang toggle buttons
             document.querySelectorAll('[data-key-lang="langToggle"]').forEach(btn => {
-                btn.textContent = currentLanguage === 'en' ? 'En / ع' : 'En / ع'; // Always show both
+                btn.textContent = 'En / ع';
             });
             
             document.title = lang['pageTitle'];
@@ -838,16 +829,9 @@
         function toggleLanguage() {
             currentLanguage = currentLanguage === 'en' ? 'ar' : 'en';
             applyTranslations();
-            // Re-render cards if data is available
-            if (reservationData) {
-                buildLocationCards();
-            }
-            if (selectedLocation) {
-                buildPeriodCards(selectedLocation);
-            }
-            if (selectedLocation && selectedPeriod) {
-                updateReserveDetails();
-            }
+            if (reservationData) buildLocationCards();
+            if (selectedLocation) buildPeriodCards(selectedLocation);
+            if (selectedLocation && selectedPeriod) updateReserveDetails();
         }
 
         // --- Utility Functions ---
@@ -876,42 +860,39 @@
             return message; // Fallback
         }
 
-        function showMessage(message, type = 'success') {
+        // For modal pop-ups
+        function showModalMessage(message, type = 'success') {
             messageModal.textContent = getTranslatedMessage(message);
             messageModal.className = type;
             messageModal.style.display = 'block';
             setTimeout(() => { messageModal.style.display = 'none'; }, 3000);
         }
 
-        // FIXED: Changed function to use form-message class
-        function showInlineMessage(elementId, message, type = 'success') {
-            const element = document.getElementById(elementId);
+        // For inline form messages
+        // FIXED: Renamed to use form-message class
+        function showFormMessage(element, message, type = 'success') {
             element.textContent = getTranslatedMessage(message);
-            element.className = `form-message ${type}`; // Use form-message
+            element.className = `form-message ${type}`;
             element.style.display = 'block';
-            
-            // Auto-hide error messages, but not success
-            if(type === 'error') {
-                setTimeout(() => { element.style.display = 'none'; }, 4000);
-            }
         }
         
-        // NEW: Clear all form messages
         function clearFormMessages() {
             reserveMessage.style.display = 'none';
             checkFormMessage.style.display = 'none';
             updateFormMessage.style.display = 'none';
         }
 
+
         function showPage(pageId) {
             document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
             document.getElementById(pageId).classList.add('active');
             
-            clearFormMessages(); // Clear messages when switching pages
+            clearFormMessages(); 
             
             if (pageId === 'page-welcome') {
                 reserveForm.reset();
-                btnConfirmReserve.disabled = false; // Re-enable confirm button
+                btnConfirmReserve.disabled = false; // Re-enable button
+                btnConfirmUpdate.disabled = false; // Re-enable update button
                 checkForm.reset();
                 updateForm.style.display = 'none';
                 checkResults.style.display = 'none';
@@ -1001,6 +982,10 @@
         }
         
         // --- New Navigation Handlers ---
+        
+        function navigateReserveBack() { 
+            showPage(reserveBackPage);
+        }
 
         function selectLocation(locationName) {
             selectedLocation = locationName;
@@ -1011,15 +996,18 @@
         function selectPeriod(periodName) {
             selectedPeriod = periodName;
             updateReserveDetails();
+            reserveBackPage = 'page-periods'; // Reset back page to periods
             showPage('page-reserve');
         }
 
         // --- Data Fetching Functions ---
         
-        async function fetchReservationData() {
-            showLoading();
-            const lang = translations[currentLanguage];
-            showMessage(lang['loadingData'], 'success'); 
+        async function fetchReservationData(isSilent = false) {
+             if (!isSilent) { 
+                showLoading();
+                const lang = translations[currentLanguage];
+                showModalMessage(lang['loadingData'], 'success'); 
+            }
             
             const payload = { action: 'getCapacity' };
 
@@ -1040,15 +1028,15 @@
 
                 if (result.status === 'success') {
                     reservationData = result.data;
-                    buildLocationCards();
+                    buildLocationCards(); 
                 } else {
                     throw new Error(result.message);
                 }
-                hideLoading();
+                if (!isSilent) hideLoading();
 
             } catch (error) {
-                hideLoading();
-                showMessage(lang['errorLoadingData'], 'error');
+                if (!isSilent) hideLoading();
+                showModalMessage(translations[currentLanguage]['errorLoadingData'], 'error');
                 console.error('Fetch Error:', error.message, ' - This often means the Google Apps Script has not been deployed or re-deployed correctly.');
             }
         }
@@ -1060,18 +1048,16 @@
         reserveForm.addEventListener('submit', (e) => {
             e.preventDefault();
             showLoading();
-            reserveMessage.style.display = 'none'; // Hide previous messages
+            reserveMessage.style.display = 'none'; // Hide old
 
             const studentId = document.getElementById('student-id').value.trim();
             const studentEmail = document.getElementById('student-email').value.trim();
             const password = document.getElementById('student-password').value;
             
-            console.log('Submitting:', { studentId, email: studentEmail, location: selectedLocation, period: selectedPeriod });
-            
             const data = {
                 action: 'submitReservation',
                 studentId: studentId,
-                email: studentEmail, // Make sure this matches what Code.gs expects
+                email: studentEmail, 
                 location: selectedLocation,
                 period: selectedPeriod,
                 password: password
@@ -1085,22 +1071,17 @@
             .then(res => res.json())
             .then(response => {
                 hideLoading();
-                console.log('Response:', response);
                 if (response.status === 'success') {
                     showInlineMessage('reserve-message', response.message, 'success');
-                    reserveForm.reset();
-                    // Don't navigate away, just show message
-                    // setTimeout(() => {
-                    //     showPage('page-welcome');
-                    //     fetchReservationData(); 
-                    // }, 5000); // Wait 5 seconds before navigating away
+                    btnConfirmReserve.disabled = true; // Disable button
+                    reserveBackPage = 'page-welcome'; // Change back button destination
+                    fetchReservationData(true); // Silently refresh data in background
                 } else {
                     showInlineMessage('reserve-message', response.message, 'error');
                 }
             })
             .catch(error => {
                 hideLoading();
-                console.error('Fetch error:', error);
                 showInlineMessage('reserve-message', 'An error occurred: ' + error.message, 'error');
             });
         });
@@ -1111,7 +1092,8 @@
             showLoading();
             checkResults.style.display = 'none';
             updateForm.style.display = 'none';
-            checkFormMessage.style.display = 'none'; // Hide message
+            checkFormMessage.style.display = 'none';
+
 
             const studentId = document.getElementById('check-student-id').value;
             const password = document.getElementById('check-password').value;
@@ -1134,10 +1116,15 @@
                     const bookingData = response.data;
                     document.getElementById('result-name').textContent = bookingData.name;
                     document.getElementById('result-id').textContent = bookingData.id;
-                    document.getElementById('result-date').textContent = bookingData.date;
+                    document.getElementById('result-date').textContent = bookingData.date; 
                     document.getElementById('result-exam-date').textContent = EXAM_DATE; // Display exam date
                     document.getElementById('result-location').textContent = bookingData.location;
                     document.getElementById('result-period').textContent = bookingData.period;
+                    
+                    // Manually translate static exam date
+                    const lang = translations[currentLanguage];
+                    document.getElementById('result-exam-date').textContent = lang.examDateFull;
+
                     checkResults.style.display = 'block';
 
                     if (response.allowUpdate) {
@@ -1150,7 +1137,7 @@
                         updateForm.style.display = 'none'; 
                     }
                 } else {
-                    showInlineMessage('check-form-message', response.message, 'error');
+                     showInlineMessage('check-form-message', response.message, 'error');
                 }
             })
             .catch(error => {
@@ -1163,7 +1150,7 @@
         updateForm.addEventListener('submit', (e) => {
             e.preventDefault();
             showLoading();
-            updateFormMessage.style.display = 'none'; // Hide previous messages
+            updateFormMessage.style.display = 'none';
 
             const formData = new FormData(updateForm);
             const data = {
@@ -1184,11 +1171,12 @@
                 hideLoading();
                 if (response.status === 'success') {
                     showInlineMessage('update-form-message', response.message, 'success');
-                    // Don't navigate away, just hide forms
-                    updateForm.style.display = 'none';
-                    checkResults.style.display = 'none';
-                    checkForm.reset();
-                    fetchReservationData(); // Refresh data in background
+                    btnConfirmUpdate.disabled = true; // Disable update button
+                    // Don't hide form, just disable button and show message
+                    // updateForm.style.display = 'none'; 
+                    checkResults.style.display = 'none'; // Hide old results
+                    checkForm.reset(); // Reset check form
+                    fetchReservationData(true); // Silently refresh
                 } else {
                     showInlineMessage('update-form-message', response.message, 'error');
                 }
@@ -1204,17 +1192,7 @@
             // --- Navigation ---
             document.getElementById('btn-goto-check').addEventListener('click', () => showPage('page-check'));
             document.getElementById('btn-periods-back').addEventListener('click', () => showPage('page-welcome'));
-            document.getElementById('btn-reserve-back').addEventListener('click', () => {
-                // Check if there's a success message showing
-                const reserveMsg = document.getElementById('reserve-message');
-                if (reserveMsg.style.display === 'block' && reserveMsg.classList.contains('success')) {
-                    // If success message is showing, go to welcome page
-                    showPage('page-welcome');
-                } else {
-                    // Otherwise, go back to periods page
-                    showPage('page-periods');
-                }
-            });
+            document.getElementById('btn-reserve-back').addEventListener('click', () => navigateReserveBack()); // Use named handler
             document.getElementById('btn-check-back').addEventListener('click', () => showPage('page-welcome'));
 
             // --- Language Toggles ---
@@ -1240,7 +1218,7 @@
 
             // --- Initial Load ---
             applyTranslations();
-            fetchReservationData(); 
+            fetchReservationData(false); // Fetch data with loading UI
         });
     </script>
 
