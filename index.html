@@ -824,6 +824,36 @@
             
             document.title = lang['pageTitle'];
         }
+        
+        // NEW function to find original english key
+        function getTranslationKey(message) {
+            // Check for exact match
+            let key = messageKeys[message];
+            if (key) return key;
+
+            // Check for dynamic match
+            for (const partial in dynamicMessageKeys) {
+                if (message.includes(partial)) {
+                    return dynamicMessageKeys[partial];
+                }
+            }
+            
+             if (message.startsWith('An error occurred: ')) {
+                return 'msgErrorGeneric';
+            }
+            
+            // Fallback for already-translated messages
+            for (const langKey in translations) {
+                const langData = translations[langKey];
+                for (const msgKey in langData) {
+                    if (langData[msgKey] === message) {
+                        return msgKey;
+                    }
+                }
+            }
+            return null; // No key found
+        }
+
 
         function toggleLanguage() {
             currentLanguage = currentLanguage === 'en' ? 'ar' : 'en';
@@ -831,6 +861,23 @@
             if (reservationData) buildLocationCards();
             if (selectedLocation) buildPeriodCards(selectedLocation);
             if (selectedLocation && selectedPeriod) updateReserveDetails();
+
+            // NEW: Re-translate visible form messages
+            document.querySelectorAll('.form-message').forEach(el => {
+              if (el.style.display === 'block') {
+                const key = el.getAttribute('data-key-message');
+                if (key) {
+                  // This is a dynamic message, must reconstruct
+                  if (key === 'msgErrorCapacity') {
+                        // Re-run the original get logic
+                        el.textContent = getTranslatedMessage(el.getAttribute('data-original-message'));
+                  } else {
+                        // This is a static message
+                        el.textContent = translations[currentLanguage][key];
+                  }
+                }
+              }
+            });
         }
 
         // --- Utility Functions ---
@@ -869,15 +916,26 @@
 
         // For inline form messages
         function showFormMessage(element, message, type = 'success') {
-            element.textContent = getTranslatedMessage(message);
+            const msg = getTranslatedMessage(message);
+            const key = getTranslationKey(message);
+            element.textContent = msg;
             element.className = `form-message ${type}`; 
             element.style.display = 'block';
+            // Store the original key and message for re-translation
+            if (key) {
+                element.setAttribute('data-key-message', key);
+                element.setAttribute('data-original-message', message);
+            }
         }
         
         function clearFormMessages() {
-            reserveMessage.style.display = 'none';
-            checkFormMessage.style.display = 'none';
-            updateFormMessage.style.display = 'none';
+            [reserveMessage, checkFormMessage, updateFormMessage].forEach(el => {
+                if(el) {
+                    el.style.display = 'none';
+                    el.removeAttribute('data-key-message');
+                    el.removeAttribute('data-original-message');
+                }
+            });
         }
 
 
@@ -1179,7 +1237,6 @@
             })
             .catch(error => {
                 hideLoading();
-                // FIXED: Removed stray 'M'
                 showFormMessage(updateFormMessage, 'An error occurred: ' + error.message, 'error');
             });
         });
