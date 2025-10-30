@@ -587,6 +587,7 @@
                         </select>
                     </div>
                     <button type="submit" class="form-button" data-key="buttonUpdate">Update My Reservation</button>
+                    <div id="update-message" class="inline-message"></div>
                 </form>
             </main>
         </section>
@@ -1127,6 +1128,7 @@
         updateForm.addEventListener('submit', (e) => {
             e.preventDefault();
             showLoading();
+            document.getElementById('update-message').style.display = 'none'; // Hide previous messages
 
             const formData = new FormData(updateForm);
             const data = {
@@ -1146,19 +1148,21 @@
             .then(response => {
                 hideLoading();
                 if (response.status === 'success') {
-                    showMessage(response.message, 'success');
-                    updateForm.style.display = 'none';
-                    checkResults.style.display = 'none';
-                    checkForm.reset();
-                    showPage('page-welcome'); 
-                    fetchReservationData(); 
+                    showInlineMessage('update-message', response.message, 'success');
+                    setTimeout(() => {
+                        updateForm.style.display = 'none';
+                        checkResults.style.display = 'none';
+                        checkForm.reset();
+                        showPage('page-welcome'); 
+                        fetchReservationData();
+                    }, 5000); // Wait 5 seconds before navigating away
                 } else {
-                    showMessage(response.message, 'error');
+                    showInlineMessage('update-message', response.message, 'error');
                 }
             })
             .catch(error => {
                 hideLoading();
-                showMessage('An error occurred: ' + error.message, 'error');
+                showInlineMessage('update-message', 'An error occurred: ' + error.message, 'error');
             });
         });
 
@@ -1167,7 +1171,17 @@
             // --- Navigation ---
             document.getElementById('btn-goto-check').addEventListener('click', () => showPage('page-check'));
             document.getElementById('btn-periods-back').addEventListener('click', () => showPage('page-welcome'));
-            document.getElementById('btn-reserve-back').addEventListener('click', () => showPage('page-periods'));
+            document.getElementById('btn-reserve-back').addEventListener('click', () => {
+                // Check if there's a success message showing
+                const reserveMessage = document.getElementById('reserve-message');
+                if (reserveMessage.style.display === 'block' && reserveMessage.classList.contains('success')) {
+                    // If success message is showing, go to welcome page
+                    showPage('page-welcome');
+                } else {
+                    // Otherwise, go back to periods page
+                    showPage('page-periods');
+                }
+            });
             document.getElementById('btn-check-back').addEventListener('click', () => showPage('page-welcome'));
 
             // --- Language Toggles ---
