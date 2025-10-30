@@ -196,7 +196,7 @@
             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.07), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
         }
         .card-header {
-            padding: 20px;
+            padding: 20px 20px 16px 20px; /* Adjusted padding */
         }
         .card-title {
             font-size: 1.125rem;
@@ -213,6 +213,10 @@
         }
         .card-body {
             padding: 20px;
+        }
+        /* NEW: Make header and body padding consistent for progress bars */
+        .card-body.progress-body {
+             padding-top: 0px;
         }
         .card-body.full {
             opacity: 0.7;
@@ -440,7 +444,6 @@
         <!-- ============================================= -->
         <section id="page-welcome" class="page active">
             <header class="page-header">
-                <!-- FIXED: Added referrerpolicy and onerror fallback -->
                 <img src="https://smartlearning.must.edu.eg/pluginfile.php/1/core_admin/logo/0x200/1715171530/logo.png" 
                      alt="University Logo" 
                      class="page-header-logo" 
@@ -510,7 +513,7 @@
                         <form id="reserve-form">
                             <div class="form-group">
                                 <label for="student-id" data-key="labelStudentId">Student ID</label>
-                                <input type="text" id="student-id" name="studentId" data-key-placeholder="placeholderStudentId" placeholder="Enter your 5 or 9 digit ID" required>
+                                <input type="text" id="student-id" name="studentId" data-key-placeholder="placeholderStudentId" placeholder="Enter your ID" required>
                             </div>
                             <div class="form-group">
                                 <label for="student-email" data-key="labelStudentEmail">Email Address</label>
@@ -546,7 +549,7 @@
                 <form id="check-form" class="card card-body">
                     <div class="form-group">
                         <label for="check-student-id" data-key="labelCheckStudentId">Student ID</label>
-                        <input type="text" id="check-student-id" name="checkStudentId" data-key-placeholder="placeholderCheckStudentId" placeholder="Enter your 5 or 9 digit ID to check" required>
+                        <input type="text" id="check-student-id" name="checkStudentId" data-key-placeholder="placeholderCheckStudentId" placeholder="Enter your ID to check" required>
                     </div>
                     <div class="form-group">
                         <label for="check-password" data-key="labelPassword">Password</label>
@@ -638,14 +641,14 @@
                 'reserveStep3': 'Step 3: Confirm Reservation',
                 'reserveYourSeat': 'Your Seat',
                 'labelStudentId': 'Student ID',
-                'placeholderStudentId': 'Enter your 5 or 9 digit ID',
+                'placeholderStudentId': 'Enter your ID', // Simplified
                 'labelStudentEmail': 'Email Address',
                 'placeholderStudentEmail': 'Enter your email address',
                 'labelCreatePassword': 'Create Password (min 4 chars)',
                 'placeholderCreatePassword': 'Create a password for updates',
                 'buttonConfirmReserve': 'Confirm My Reservation',
                 'labelCheckStudentId': 'Student ID',
-                'placeholderCheckStudentId': 'Enter your 5 or 9 digit ID to check',
+                'placeholderCheckStudentId': 'Enter your ID to check', // Simplified
                 'labelPassword': 'Password',
                 'placeholderPassword': 'Enter your password',
                 'buttonCheck': 'Check My Reservation',
@@ -664,7 +667,7 @@
                 'buttonUpdate': 'Update My Reservation',
                 'optionChooseLocation': '-- Choose a new lab --',
                 'optionChoosePeriod': '-- Choose a new time slot --',
-                'capacity': 'Capacity',
+                'capacity': 'Total Capacity', // Updated
                 'reserved': 'Reserved',
                 'remaining': 'Remaining',
                 'full': 'Full',
@@ -675,7 +678,7 @@
                 // Messages
                 'msgSuccess': 'Reservation successful! Your seat is booked.',
                 'msgSuccessUpdate': 'Your reservation has been successfully updated.',
-                'msgErrorIDNotFound': 'Student ID not found or invalid format.', // Updated
+                'msgErrorIDNotFound': 'Student ID not found in the registration list.', // Updated
                 'msgErrorInvalidEmail': 'Invalid email format.',
                 'msgErrorAlreadyReserved': 'This ID already has a reservation. Check your reservation to make changes.',
                 'msgErrorCapacity': 'is full for this period.',
@@ -728,7 +731,7 @@
                 'buttonUpdate': 'تحديث حجزي',
                 'optionChooseLocation': '-- اختر معمل --',
                 'optionChoosePeriod': '-- اختر فترة زمنية --',
-                'capacity': 'السعة',
+                'capacity': 'السعة الإجمالية', // Updated
                 'reserved': 'محجوز',
                 'remaining': 'متبقي',
                 'full': 'ممتلئ',
@@ -739,7 +742,7 @@
                 // Messages
                 'msgSuccess': 'تم الحجز بنجاح!',
                 'msgSuccessUpdate': 'تم تحديث حجزك بنجاح.',
-                'msgErrorIDNotFound': 'الرقم الجامعي غير موجود أو غير صالح.', // Updated
+                'msgErrorIDNotFound': 'الرقم الجامعي غير موجود.', // Updated
                 'msgErrorInvalidEmail': 'صيغة البريد الإلكتروني غير صحيحة.',
                 'msgErrorAlreadyReserved': 'هذا الرقم لديه حجز بالفعل. يمكنك الاستعلام لتغيير الحجز.',
                 'msgErrorCapacity': 'ممتلئ في الفترة المحددة.',
@@ -974,14 +977,39 @@
                 const location = reservationData[locationName];
                 const total = location.total;
                 
+                // NEW: Get total reserved for progress bar
+                const totalReserved = location.totalReserved || 0;
+                const remaining = total - totalReserved;
+                const percentage = total > 0 ? (totalReserved / total) * 100 : 0;
+                const isFull = remaining <= 0;
+
+                let progressClass = 'progress-bar';
+                if (percentage > 80) progressClass += ' high-capacity';
+                if (isFull) progressClass += ' full';
+                
                 const card = document.createElement('div');
                 card.className = 'card card-clickable';
                 card.dataset.location = locationName; 
                 
+                // UPDATED CARD HTML
                 card.innerHTML = `
                     <div class="card-header">
                         <h2 class="card-title">${locationName}</h2>
                         <p class="card-subtitle" data-key="capacity">${lang['capacity']}: ${total}</p>
+                    </div>
+                    <div class="card-body progress-body">
+                        <div class="progress-label">
+                            <span>
+                                <span data-key="reserved">${lang['reserved']}</span>: ${totalReserved}
+                            </span>
+                            ${isFull ? 
+                                `<span class="status-full" data-key="full">${lang['full']}</span>` : 
+                                `<span><span data-key="remaining">${lang['remaining']}</span>: ${remaining}</span>`
+                            }
+                        </div>
+                        <div class="progress-track">
+                            <div class="${progressClass}" style="width: ${percentage}%"></div>
+                        </div>
                     </div>
                 `;
                 locationCardsContainer.appendChild(card);
@@ -1001,7 +1029,8 @@
             }
 
             const location = reservationData[locationName];
-            const total = location.total;
+            // Use per-period capacity for this page
+            const total = reservationData[locationName].total / PERIODS.length;
 
             PERIODS.forEach(periodName => {
                 const reserved = location.periods[periodName];
