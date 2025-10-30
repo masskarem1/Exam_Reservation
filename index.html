@@ -96,6 +96,8 @@
         }
         .page-header-logo {
             height: 100px; /* Increased size */
+            width: auto; /* Maintain aspect ratio */
+            max-width: 80%; /* Prevent oversize */
             margin-bottom: 16px;
         }
         .page-header-title {
@@ -438,7 +440,13 @@
         <!-- ============================================= -->
         <section id="page-welcome" class="page active">
             <header class="page-header">
-                <img src="https://smartlearning.must.edu.eg/pluginfile.php/1/core_admin/logo/0x200/1715171530/logo.png" alt="University Logo" class="page-header-logo">
+                <!-- FIXED: Added referrerpolicy and onerror fallback -->
+                <img src="https://smartlearning.must.edu.eg/pluginfile.php/1/core_admin/logo/0x200/1715171530/logo.png" 
+                     alt="University Logo" 
+                     class="page-header-logo" 
+                     referrerpolicy="no-referrer"
+                     onerror="this.onerror=null; this.src='https://placehold.co/300x100/6366f1/FFFFFF?text=MUST+University&font=inter'; this.style.height='auto'; this.style.width='200px';">
+                
                 <h1 class="page-header-title" data-key="headerTitle">Exam Seat Reservation</h1>
                 <p class="page-header-subtitle" data-key="headerDate"><strong>Exam Date:</strong> Tuesday, 4 November 2025</p>
                 <div class="course-info">
@@ -667,7 +675,7 @@
                 // Messages
                 'msgSuccess': 'Reservation successful! Your seat is booked.',
                 'msgSuccessUpdate': 'Your reservation has been successfully updated.',
-                'msgErrorIDNotFound': 'Student ID not found or invalid format (must be 5 or 9 digits).', 
+                'msgErrorIDNotFound': 'Student ID not found or invalid format.', // Updated
                 'msgErrorInvalidEmail': 'Invalid email format.',
                 'msgErrorAlreadyReserved': 'This ID already has a reservation. Check your reservation to make changes.',
                 'msgErrorCapacity': 'is full for this period.',
@@ -694,14 +702,14 @@
                 'reserveStep3': 'الخطوة 3: تأكيد الحجز',
                 'reserveYourSeat': 'مقعدك',
                 'labelStudentId': 'الرقم الجامعي',
-                'placeholderStudentId': 'أدخل رقمك المكون من 5 أو 9 أرقام',
+                'placeholderStudentId': 'أدخل رقمك الجامعي', // Updated
                 'labelStudentEmail': 'البريد الإلكتروني',
                 'placeholderStudentEmail': 'أدخل بريدك الإلكتروني',
                 'labelCreatePassword': 'إنشاء كلمة مرور (4 أحرف على الأقل)',
                 'placeholderCreatePassword': 'أنشئ كلمة مرور للتحديثات',
                 'buttonConfirmReserve': 'تأكيد حجزي',
                 'labelCheckStudentId': 'الرقم الجامعي',
-                'placeholderCheckStudentId': 'أدخل رقمك المكون من 5 أو 9 أرقام للاستعلام',
+                'placeholderCheckStudentId': 'أدخل رقمك الجامعي للاستعلام', // Updated
                 'labelPassword': 'كلمة المرور',
                 'placeholderPassword': 'أدخل كلمة المرور',
                 'buttonCheck': 'استعلم عن حجزي',
@@ -731,7 +739,7 @@
                 // Messages
                 'msgSuccess': 'تم الحجز بنجاح!',
                 'msgSuccessUpdate': 'تم تحديث حجزك بنجاح.',
-                'msgErrorIDNotFound': 'الرقم الجامعي غير موجود أو غير صالح (يجب أن يكون 5 أو 9 أرقام).',
+                'msgErrorIDNotFound': 'الرقم الجامعي غير موجود أو غير صالح.', // Updated
                 'msgErrorInvalidEmail': 'صيغة البريد الإلكتروني غير صحيحة.',
                 'msgErrorAlreadyReserved': 'هذا الرقم لديه حجز بالفعل. يمكنك الاستعلام لتغيير الحجز.',
                 'msgErrorCapacity': 'ممتلئ في الفترة المحددة.',
@@ -753,7 +761,7 @@
             'Reservation successful! Your seat is booked.': 'msgSuccess',
             'Your reservation has been successfully updated.': 'msgSuccessUpdate',
             'Student ID not found in the registration list.': 'msgErrorIDNotFound',
-            'Invalid Student ID format. Must be 5 or 9 digits.': 'msgErrorIDNotFound', 
+            'Invalid Student ID format.': 'msgErrorIDNotFound', // Updated
             'Invalid email format.': 'msgErrorInvalidEmail',
             'This ID already has a reservation. Check your reservation to make changes.': 'msgErrorAlreadyReserved',
             'Invalid period selected.': 'msgErrorInvalidPeriod',
