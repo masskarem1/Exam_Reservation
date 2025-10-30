@@ -588,7 +588,6 @@
                             <option value="12:40 - 1:15">12:40 - 1:15</option>
                         </select>
                     </div>
-                    <!-- FIXED: Added id="btn-confirm-update" -->
                     <button type="submit" class="form-button" id="btn-confirm-update" data-key="buttonUpdate">Update My Reservation</button>
                     <!-- In-form message area for update form -->
                     <div id="update-form-message" class="form-message"></div>
@@ -795,7 +794,7 @@
         const locationCardsContainer = document.getElementById('location-cards-container');
         const periodCardsContainer = document.getElementById('period-cards-container');
         const btnConfirmReserve = document.getElementById('btn-confirm-reserve');
-        const btnConfirmUpdate = document.getElementById('btn-confirm-update'); // FIXED: Get update button
+        const btnConfirmUpdate = document.getElementById('btn-confirm-update'); 
         
         // --- Language Functions ---
         function applyTranslations() {
@@ -869,10 +868,9 @@
         }
 
         // For inline form messages
-        // FIXED: Renamed to use form-message class
         function showFormMessage(element, message, type = 'success') {
             element.textContent = getTranslatedMessage(message);
-            element.className = `form-message ${type}`;
+            element.className = `form-message ${type}`; 
             element.style.display = 'block';
         }
         
@@ -1072,17 +1070,17 @@
             .then(response => {
                 hideLoading();
                 if (response.status === 'success') {
-                    showInlineMessage('reserve-message', response.message, 'success');
+                    showFormMessage(reserveMessage, response.message, 'success');
                     btnConfirmReserve.disabled = true; // Disable button
                     reserveBackPage = 'page-welcome'; // Change back button destination
                     fetchReservationData(true); // Silently refresh data in background
                 } else {
-                    showInlineMessage('reserve-message', response.message, 'error');
+                    showFormMessage(reserveMessage, response.message, 'error');
                 }
             })
             .catch(error => {
                 hideLoading();
-                showInlineMessage('reserve-message', 'An error occurred: ' + error.message, 'error');
+                showFormMessage(reserveMessage, 'An error occurred: ' + error.message, 'error');
             });
         });
 
@@ -1117,13 +1115,12 @@
                     document.getElementById('result-name').textContent = bookingData.name;
                     document.getElementById('result-id').textContent = bookingData.id;
                     document.getElementById('result-date').textContent = bookingData.date; 
-                    document.getElementById('result-exam-date').textContent = EXAM_DATE; // Display exam date
                     document.getElementById('result-location').textContent = bookingData.location;
                     document.getElementById('result-period').textContent = bookingData.period;
                     
                     // Manually translate static exam date
                     const lang = translations[currentLanguage];
-                    document.getElementById('result-exam-date').textContent = lang.examDateFull;
+                    document.querySelector('[data-key="examDateFull"]').innerHTML = lang.examDateFull;
 
                     checkResults.style.display = 'block';
 
@@ -1137,12 +1134,12 @@
                         updateForm.style.display = 'none'; 
                     }
                 } else {
-                     showInlineMessage('check-form-message', response.message, 'error');
+                     showFormMessage(checkFormMessage, response.message, 'error');
                 }
             })
             .catch(error => {
                 hideLoading();
-                showInlineMessage('check-form-message', 'An error occurred: ' + error.message, 'error');
+                showFormMessage(checkFormMessage, 'An error occurred: ' + error.message, 'error');
             });
         });
 
@@ -1170,20 +1167,19 @@
             .then(response => {
                 hideLoading();
                 if (response.status === 'success') {
-                    showInlineMessage('update-form-message', response.message, 'success');
+                    showFormMessage(updateFormMessage, response.message, 'success');
                     btnConfirmUpdate.disabled = true; // Disable update button
                     // Don't hide form, just disable button and show message
-                    // updateForm.style.display = 'none'; 
                     checkResults.style.display = 'none'; // Hide old results
                     checkForm.reset(); // Reset check form
                     fetchReservationData(true); // Silently refresh
                 } else {
-                    showInlineMessage('update-form-message', response.message, 'error');
+                    showFormMessage(updateFormMessage, response.message, 'error');
                 }
             })
             .catch(error => {
                 hideLoading();
-                showInlineMessage('update-form-message', 'An error occurred: ' + error.message, 'error');
+                showFormMessage(updateFormMessage, 'An error occurred: ' + error.message, 'error');
             });
         });
 
