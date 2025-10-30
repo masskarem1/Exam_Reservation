@@ -313,6 +313,27 @@
             background-color: #a5b4fc;
             cursor: not-allowed;
         }
+
+        /* --- In-form Message Box --- */
+        .form-message {
+            display: none; /* Hidden by default */
+            padding: 12px;
+            margin-top: 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            text-align: center;
+            animation: slideDown 0.3s ease-out; /* Added animation */
+        }
+        .form-message.success {
+            background-color: #d1fae5; /* Emerald-100 */
+            color: #065f46; /* Emerald-800 */
+            display: block;
+        }
+        .form-message.error {
+            background-color: #fee2e2; /* Red-100 */
+            color: #991b1b; /* Red-800 */
+            display: block;
+        }
         
         /* Check/Update Page specific styles */
         #check-results {
@@ -402,27 +423,12 @@
         #message-modal.success { background-color: var(--success-color); }
         #message-modal.error { background-color: var(--error-color); }
 
-        /* Inline message for reserve page */
-        .inline-message {
-            margin-top: 16px;
-            padding: 14px 20px;
-            border-radius: 8px;
-            font-size: 0.95rem;
-            font-weight: 600;
-            text-align: center;
+        /* --- Deprecated .inline-message style (now using .form-message) --- */
+        .inline-message { 
+            /* This style is kept for any old elements, but .form-message is preferred */
             display: none;
-            animation: slideDown 0.3s ease-out;
         }
-        .inline-message.success {
-            background-color: #d1fae5; /* Light green */
-            color: #065f46; /* Dark green */
-            border: 1px solid #10b981;
-        }
-        .inline-message.error {
-            background-color: #fee2e2; /* Light red */
-            color: #991b1b; /* Dark red */
-            border: 1px solid #ef4444;
-        }
+        
         @keyframes slideDown {
             from { opacity: 0; transform: translateY(-10px); }
             to { opacity: 1; transform: translateY(0); }
@@ -440,8 +446,7 @@
             <header class="page-header">
                 <img src="https://smartlearning.must.edu.eg/pluginfile.php/1/core_admin/logo/0x200/1715171530/logo.png" alt="University Logo" class="page-header-logo">
                 <h1 class="page-header-title" data-key="headerTitle">Exam Seat Reservation</h1>
-                <!-- UPDATED TEXT - Now uses strong tag from translation -->
-                <p class="page-header-subtitle" data-key="headerDate">Exam Date: Tuesday, 4 November 2025</p>
+                <p class="page-header-subtitle" data-key="headerDate"><strong>Exam Date:</strong> Tuesday, 4 November 2025</p>
                 <div class="course-info">
                     <p><strong data-key="labelCourseCode">Course Code:</strong> COMP101</p>
                     <p><strong data-key="labelInstructor">Instructor:</strong> Dr. Mohamed Ali</p>
@@ -513,8 +518,10 @@
                                 <label for="student-password" data-key="labelCreatePassword">Create Password (min 4 chars)</label>
                                 <input type="password" id="student-password" name="studentPassword" data-key-placeholder="placeholderCreatePassword" placeholder="Create a password for updates" required>
                             </div>
-                            <button type="submit" class="form-button" data-key="buttonConfirmReserve">Confirm My Reservation</button>
-                            <div id="reserve-message" class="inline-message"></div>
+                            <!-- FIXED: Added id="btn-confirm-reserve" -->
+                            <button type="submit" class="form-button" id="btn-confirm-reserve" data-key="buttonConfirmReserve">Confirm My Reservation</button>
+                            <!-- FIXED: Changed class to "form-message" -->
+                            <div id="reserve-message" class="form-message"></div>
                         </form>
                     </div>
                 </div>
@@ -546,6 +553,8 @@
                         <input type="password" id="check-password" name="checkPassword" data-key-placeholder="placeholderPassword" placeholder="Enter your password" required>
                     </div>
                     <button type="submit" class="form-button" data-key="buttonCheck">Check My Reservation</button>
+                    <!-- FIXED: Added id="check-form-message" -->
+                    <div id="check-form-message" class="form-message"></div>
                 </form>
 
                 <!-- Check Results (hidden) -->
@@ -553,6 +562,7 @@
                     <h3 data-key="resultsTitle">Your Current Reservation</h3>
                     <p><strong data-key="resultLocation">Lab:</strong> <span id="result-location"></span></p>
                     <p><strong data-key="resultPeriod">Period:</strong> <span id="result-period"></span></p>
+                    <!-- FIXED: Changed span id to "result-exam-date" -->
                     <p><strong data-key="resultExamDate">Exam Date:</strong> <span id="result-exam-date"></span></p>
                     <p><strong data-key="resultName">Name:</strong> <span id="result-name"></span></p>
                     <p><strong data-key="resultId">ID:</strong> <span id="result-id"></span></p>
@@ -587,7 +597,8 @@
                         </select>
                     </div>
                     <button type="submit" class="form-button" data-key="buttonUpdate">Update My Reservation</button>
-                    <div id="update-message" class="inline-message"></div>
+                    <!-- FIXED: Changed id to "update-form-message" and class to "form-message" -->
+                    <div id="update-form-message" class="form-message"></div>
                 </form>
             </main>
         </section>
@@ -630,6 +641,7 @@
                 'reserveYourSeat': 'Your Seat',
                 'labelStudentId': 'Student ID',
                 'placeholderStudentId': 'Enter your 5 or 9 digit ID',
+                // FIXED: Added missing email translations
                 'labelStudentEmail': 'Email Address',
                 'placeholderStudentEmail': 'Enter your email address',
                 'labelCreatePassword': 'Create Password (min 4 chars)',
@@ -694,6 +706,7 @@
                 'reserveYourSeat': 'مقعدك',
                 'labelStudentId': 'الرقم الجامعي',
                 'placeholderStudentId': 'أدخل رقمك المكون من 5 أو 9 أرقام',
+                // FIXED: Added missing email translations
                 'labelStudentEmail': 'البريد الإلكتروني',
                 'placeholderStudentEmail': 'أدخل بريدك الإلكتروني',
                 'labelCreatePassword': 'إنشاء كلمة مرور (4 أحرف على الأقل)',
@@ -785,6 +798,11 @@
         const checkResults = document.getElementById('check-results');
         const locationCardsContainer = document.getElementById('location-cards-container');
         const periodCardsContainer = document.getElementById('period-cards-container');
+        // FIXED: Get all message boxes
+        const reserveMessage = document.getElementById('reserve-message');
+        const checkFormMessage = document.getElementById('check-form-message');
+        const updateFormMessage = document.getElementById('update-form-message');
+        const btnConfirmReserve = document.getElementById('btn-confirm-reserve');
         
         // --- Language Functions ---
         function applyTranslations() {
@@ -865,20 +883,35 @@
             setTimeout(() => { messageModal.style.display = 'none'; }, 3000);
         }
 
+        // FIXED: Changed function to use form-message class
         function showInlineMessage(elementId, message, type = 'success') {
             const element = document.getElementById(elementId);
             element.textContent = getTranslatedMessage(message);
-            element.className = `inline-message ${type}`;
+            element.className = `form-message ${type}`; // Use form-message
             element.style.display = 'block';
-            setTimeout(() => { element.style.display = 'none'; }, 4000);
+            
+            // Auto-hide error messages, but not success
+            if(type === 'error') {
+                setTimeout(() => { element.style.display = 'none'; }, 4000);
+            }
+        }
+        
+        // NEW: Clear all form messages
+        function clearFormMessages() {
+            reserveMessage.style.display = 'none';
+            checkFormMessage.style.display = 'none';
+            updateFormMessage.style.display = 'none';
         }
 
         function showPage(pageId) {
             document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
             document.getElementById(pageId).classList.add('active');
             
+            clearFormMessages(); // Clear messages when switching pages
+            
             if (pageId === 'page-welcome') {
                 reserveForm.reset();
+                btnConfirmReserve.disabled = false; // Re-enable confirm button
                 checkForm.reset();
                 updateForm.style.display = 'none';
                 checkResults.style.display = 'none';
@@ -1027,7 +1060,7 @@
         reserveForm.addEventListener('submit', (e) => {
             e.preventDefault();
             showLoading();
-            document.getElementById('reserve-message').style.display = 'none'; // Hide previous messages
+            reserveMessage.style.display = 'none'; // Hide previous messages
 
             const studentId = document.getElementById('student-id').value.trim();
             const studentEmail = document.getElementById('student-email').value.trim();
@@ -1038,7 +1071,7 @@
             const data = {
                 action: 'submitReservation',
                 studentId: studentId,
-                email: studentEmail,  // Make sure this matches what Code.gs expects
+                email: studentEmail, // Make sure this matches what Code.gs expects
                 location: selectedLocation,
                 period: selectedPeriod,
                 password: password
@@ -1056,10 +1089,11 @@
                 if (response.status === 'success') {
                     showInlineMessage('reserve-message', response.message, 'success');
                     reserveForm.reset();
-                    setTimeout(() => {
-                        showPage('page-welcome');
-                        fetchReservationData(); 
-                    }, 5000); // Wait 5 seconds before navigating away
+                    // Don't navigate away, just show message
+                    // setTimeout(() => {
+                    //     showPage('page-welcome');
+                    //     fetchReservationData(); 
+                    // }, 5000); // Wait 5 seconds before navigating away
                 } else {
                     showInlineMessage('reserve-message', response.message, 'error');
                 }
@@ -1077,6 +1111,7 @@
             showLoading();
             checkResults.style.display = 'none';
             updateForm.style.display = 'none';
+            checkFormMessage.style.display = 'none'; // Hide message
 
             const studentId = document.getElementById('check-student-id').value;
             const password = document.getElementById('check-password').value;
@@ -1115,12 +1150,12 @@
                         updateForm.style.display = 'none'; 
                     }
                 } else {
-                    showMessage(response.message, 'error');
+                    showInlineMessage('check-form-message', response.message, 'error');
                 }
             })
             .catch(error => {
                 hideLoading();
-                showMessage('An error occurred: ' + error.message, 'error');
+                showInlineMessage('check-form-message', 'An error occurred: ' + error.message, 'error');
             });
         });
 
@@ -1128,7 +1163,7 @@
         updateForm.addEventListener('submit', (e) => {
             e.preventDefault();
             showLoading();
-            document.getElementById('update-message').style.display = 'none'; // Hide previous messages
+            updateFormMessage.style.display = 'none'; // Hide previous messages
 
             const formData = new FormData(updateForm);
             const data = {
@@ -1148,21 +1183,19 @@
             .then(response => {
                 hideLoading();
                 if (response.status === 'success') {
-                    showInlineMessage('update-message', response.message, 'success');
-                    setTimeout(() => {
-                        updateForm.style.display = 'none';
-                        checkResults.style.display = 'none';
-                        checkForm.reset();
-                        showPage('page-welcome'); 
-                        fetchReservationData();
-                    }, 5000); // Wait 5 seconds before navigating away
+                    showInlineMessage('update-form-message', response.message, 'success');
+                    // Don't navigate away, just hide forms
+                    updateForm.style.display = 'none';
+                    checkResults.style.display = 'none';
+                    checkForm.reset();
+                    fetchReservationData(); // Refresh data in background
                 } else {
-                    showInlineMessage('update-message', response.message, 'error');
+                    showInlineMessage('update-form-message', response.message, 'error');
                 }
             })
             .catch(error => {
                 hideLoading();
-                showInlineMessage('update-message', 'An error occurred: ' + error.message, 'error');
+                showInlineMessage('update-form-message', 'An error occurred: ' + error.message, 'error');
             });
         });
 
@@ -1173,8 +1206,8 @@
             document.getElementById('btn-periods-back').addEventListener('click', () => showPage('page-welcome'));
             document.getElementById('btn-reserve-back').addEventListener('click', () => {
                 // Check if there's a success message showing
-                const reserveMessage = document.getElementById('reserve-message');
-                if (reserveMessage.style.display === 'block' && reserveMessage.classList.contains('success')) {
+                const reserveMsg = document.getElementById('reserve-message');
+                if (reserveMsg.style.display === 'block' && reserveMsg.classList.contains('success')) {
                     // If success message is showing, go to welcome page
                     showPage('page-welcome');
                 } else {
@@ -1213,3 +1246,4 @@
 
 </body>
 </html>
+
